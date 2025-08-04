@@ -43,8 +43,8 @@ class SesiController extends Controller
                 return redirect('/admin/dashboard');
             } elseif ($user->role == "ketua_bidang") {
                 return redirect('/ketua/dashboard');
-            } elseif ($user->role == 'anggota') {
-                return redirect('/anggota/dashboard');
+            } elseif ($user->role == 'pegawai') {
+                return redirect('/pegawai/dashboard');
             } elseif ($user->role == 'warga') {
                 return redirect('warga/dashboard');
             }

@@ -23,7 +23,7 @@ class RedirectIfAuthenticated
                     return redirect('/admin/dashboard');
                 } elseif ($user->role === 'ketua_bidang') {
                     return redirect()->route('kabid.dashboard');
-                } elseif ($user->role === 'anggota') {
+                } elseif ($user->role === 'pegawai') {
                     return redirect()->route('anggota.dashboard');
                 } elseif ($user->role === 'warga') {
                     return redirect('warga/dashboard');

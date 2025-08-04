@@ -34,11 +34,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('tim_rutin_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
-
             $table->foreign('tim_rutin_id')->references('id')->on('tim_rutins')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
-
 
         Schema::create('laporans', function (Blueprint $table) {
             $table->id();
@@ -61,9 +59,10 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('laporan_id');
             $table->string('nama_tim')->nullable();
+            $table->unsignedBigInteger('penanggung_jawab_id');
             $table->timestamps();
-
             $table->foreign('laporan_id')->references('id')->on('laporans')->cascadeOnDelete();
+            $table->foreign('penanggung_jawab_id')->references('id')->on('users')->cascadeOnDelete();
         });
 
 

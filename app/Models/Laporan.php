@@ -10,8 +10,6 @@ class Laporan extends Model
         'judul',
         'deskripsi',
         'alamat',
-        'latitude',
-        'longitude',
         'foto',
         'nama_pelapor',
         'kontak_pelapor',

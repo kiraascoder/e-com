@@ -16,7 +16,7 @@ class BidangSeeder extends Seeder
             [
                 'id' => 1,
                 'nama' => 'Bidang Jalan dan Jembatan',
-                'ketua_id' => null, // Will be updated after users are created
+                'ketua_id' => null, 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

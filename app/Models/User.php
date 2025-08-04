@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(TimNonRutin::class, 'tim_non_rutin_user');
     }
+
+    public function timNonRutinDipegang()
+    {
+        return $this->hasMany(TimNonRutin::class, 'penanggung_jawab_id');
+    }
 }

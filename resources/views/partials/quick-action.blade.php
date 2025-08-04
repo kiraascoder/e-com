@@ -1,4 +1,9 @@
-<a href=""
+@php
+    $link = $link ?? '#';
+@endphp
+
+
+<a href="{{ $link }}"
     class="group bg-white rounded-lg shadow border border-gray-200 p-6 hover:shadow-lg transition duration-300">
     <div class="flex items-center">
         <div class="p-3 rounded-full {{ $bgColor }} group-hover:{{ $hoverColor }} transition duration-300">

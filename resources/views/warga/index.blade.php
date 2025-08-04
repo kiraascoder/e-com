@@ -35,8 +35,8 @@
                 'bgColor' => 'bg-blue-100',
                 'textColor' => 'text-blue-600',
                 'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>',
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                            </svg>',
             ])
 
             @include('partials.dashboard-stats', [
@@ -46,8 +46,8 @@
                 'bgColor' => 'bg-yellow-100',
                 'textColor' => 'text-yellow-600',
                 'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>',
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>',
             ])
 
             @include('partials.dashboard-stats', [
@@ -57,8 +57,8 @@
                 'bgColor' => 'bg-green-100',
                 'textColor' => 'text-green-600',
                 'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>',
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>',
             ])
 
             @include('partials.dashboard-stats', [
@@ -68,8 +68,8 @@
                 'bgColor' => 'bg-purple-100',
                 'textColor' => 'text-purple-600',
                 'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>',
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                            </svg>',
             ])
         </div>
 
@@ -80,37 +80,37 @@
                 @include('partials.quick-action', [
                     'title' => 'Buat Laporan Baru',
                     'description' => 'Laporkan masalah infrastruktur',
-                    // 'link' => route('laporan.create'),
+                    'link' => route('warga.buat.laporan'),
                     'bgColor' => 'bg-blue-100',
                     'hoverColor' => 'bg-blue-200',
                     'iconColor' => 'text-blue-600',
                     'icon' => '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                                </svg>',
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                                                </svg>',
                 ])
 
                 @include('partials.quick-action', [
                     'title' => 'Tracking Laporan',
                     'description' => 'Pantau status laporan Anda',
-                    // 'link' => route('warga.laporan.tracking'),
+                    'link' => route('warga.laporan'),
                     'bgColor' => 'bg-green-100',
                     'hoverColor' => 'bg-green-200',
                     'iconColor' => 'text-green-600',
                     'icon' => '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                                                </svg>',
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                                                                </svg>',
                 ])
 
                 @include('partials.quick-action', [
                     'title' => 'Edit Profile',
                     'description' => 'Perbarui informasi pribadi',
-                    // 'link' => route('profile.edit'),
+                    'link' => route('warga.profile'),
                     'bgColor' => 'bg-purple-100',
                     'hoverColor' => 'bg-purple-200',
                     'iconColor' => 'text-purple-600',
                     'icon' => '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                                </svg>',
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                                                </svg>',
                 ])
             </div>
         </div>
@@ -121,8 +121,7 @@
             <div>
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-gray-900">Laporan Terbaru Saya</h2>
-                    <a href=""
-                        class="text-blue-600 hover:text-blue-800 font-medium transition duration-300">
+                    <a href="" class="text-blue-600 hover:text-blue-800 font-medium transition duration-300">
                         Lihat Semua →
                     </a>
                 </div>
