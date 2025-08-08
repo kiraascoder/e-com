@@ -15,41 +15,33 @@ class BidangSeeder extends Seeder
         $bidangs = [
             [
                 'id' => 1,
-                'nama' => 'Bidang Jalan dan Jembatan',
-                'ketua_id' => null, 
+                'nama' => 'Bina Marga',
+                'ketua_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 2,
-                'nama' => 'Bidang Drainase dan Irigasi',
+                'nama' => 'Cipta Karya',
                 'ketua_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 3,
-                'nama' => 'Bidang Bangunan Gedung',
+                'nama' => 'Sumber Daya Air',
                 'ketua_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 4,
-                'nama' => 'Bidang Tata Ruang',
-                'ketua_id' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id' => 5,
-                'nama' => 'Bidang Sumber Daya Air',
+                'nama' => 'Tata Ruang',
                 'ketua_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
-
         DB::table('bidangs')->insert($bidangs);
     }
 }

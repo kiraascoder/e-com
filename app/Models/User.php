@@ -20,6 +20,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'alamat',
+        'no_telepon',
+        'jenis_kelamin',
+        'tanggal_lahir',
         'password',
         'role'
     ];
@@ -70,5 +74,9 @@ class User extends Authenticatable
     public function timNonRutinDipegang()
     {
         return $this->hasMany(TimNonRutin::class, 'penanggung_jawab_id');
+    }
+    public function laporanDibuat()
+    {
+        return $this->hasMany(Laporan::class, 'pelapor_id');
     }
 }

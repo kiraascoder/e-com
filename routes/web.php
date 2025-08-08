@@ -22,9 +22,11 @@ Route::middleware('authenticated')->group(function () {
 Route::prefix('warga')->middleware('role:warga')->group(function () {
     Route::get('dashboard', [WargaController::class, 'index'])->name('warga.dashboard');
     Route::get('edit-profile', [WargaController::class, 'profile'])->name('warga.profile');
+    Route::put('edit-profile/update', [WargaController::class, 'profileUpdate'])->name('warga.profile.update');
     Route::get('laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
+    Route::get('laporan/{id}/detail', [WargaController::class, 'detailLaporan'])->name('warga.laporan.show');
     Route::get('buat-laporan', [WargaController::class, 'buatLaporan'])->name('warga.buat.laporan');
-    Route::get('store-laporan', [WargaController::class, 'storeLaporan'])->name('warga.laporan.store');
+    Route::post('store-laporan', [WargaController::class, 'storeLaporan'])->name('warga.laporan.store');
 });
 
 // Admin Routes
@@ -33,13 +35,18 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/bidang', [AdminController::class, 'bidang'])->name('admin.bidang');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
-
 });
 
 // Ketua Bidang Routes  
 Route::prefix('ketua')->middleware(['auth', 'role:ketua_bidang'])->group(function () {
     Route::get('/dashboard', [KetuaBidangController::class, 'index'])->name('ketua.dashboard');
     Route::get('/tim', [KetuaBidangController::class, 'tim'])->name('ketua.tim');
+    Route::post('/timrutin-store', [KetuaBidangController::class, 'timRutinStore'])->name('ketua.rutin.store');
+    Route::delete('/timrutin/{id}', [KetuaBidangController::class, 'timRutinDestroy'])->name('ketua.rutin.destroy');    
+    Route::get('/timrutin/{id}/detail', [KetuaBidangController::class, 'timRutinShow'])->name('ketua.rutin.show');    
+    Route::post('/timnonrutin-store', [KetuaBidangController::class, 'timNonRutinStore'])->name('ketua.nonrutin.store');
+    Route::get('/tim/{id}', [KetuaBidangController::class, 'detailTim'])->name('ketua.tim.show');
+
     Route::get('/daftar-laporan', [KetuaBidangController::class, 'laporan'])->name('ketua.laporan');
     Route::get('/review-laporan', [KetuaBidangController::class, 'review'])->name('ketua.review');
 });

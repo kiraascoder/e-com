@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TimRutin extends Model
 {
-    protected $fillable = ['nama_tim', 'bidang_id', 'penanggung_jawab_id'];
+    protected $fillable = ['nama_tim', 'bidang_id', 'penanggung_jawab_id', 'deskripsi', 'jadwal_pelaksanaan'];
 
     public function bidang()
     {

@@ -15,7 +15,8 @@ class Laporan extends Model
         'kontak_pelapor',
         'bidang_id',
         'status_verifikasi',
-        'tanggal_laporan'
+        'tanggal_laporan',
+        'pelapor_id',
     ];
 
     public function bidang()
@@ -31,5 +32,9 @@ class Laporan extends Model
     public function laporanNonRutin()
     {
         return $this->hasOne(LaporanNonRutin::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'pelapor_id');
     }
 }

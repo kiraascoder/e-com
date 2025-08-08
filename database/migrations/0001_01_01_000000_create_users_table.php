@@ -16,10 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'ketua_bidang', 'pegawai', 'warga',])->default('warga');
+            $table->enum('role', ['admin', 'ketua_bidang', 'pegawai', 'warga'])->default('warga');
+            $table->string('alamat')->nullable();
+            $table->string('no_telepon', 20)->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan'])->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
+
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();

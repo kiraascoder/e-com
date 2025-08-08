@@ -22,8 +22,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('bidang_id');
             $table->string('nama_tim');
             $table->unsignedBigInteger('penanggung_jawab_id');
+            $table->string('deskripsi');
+            $table->string('jadwal_pelaksanaan');
             $table->timestamps();
-
             $table->foreign('bidang_id')->references('id')->on('bidangs')->cascadeOnDelete();
             $table->foreign('penanggung_jawab_id')->references('id')->on('users')->cascadeOnDelete();
         });
@@ -42,16 +43,20 @@ return new class extends Migration {
             $table->id();
             $table->string('judul');
             $table->text('deskripsi');
-            $table->string('alamat')->nullable();
+            $table->string('alamat');
             $table->string('foto')->nullable();
+            $table->unsignedBigInteger('pelapor_id')->nullable();
+            $table->foreign('pelapor_id')->references('id')->on('users')->nullOnDelete();
             $table->string('nama_pelapor');
             $table->string('kontak_pelapor')->nullable();
-            $table->enum('status_verifikasi', ['pending', 'diterima', 'ditolak'])->default('pending');
+            $table->enum('status_verifikasi', ['pending', 'diterima', 'ditolak', 'selesai'])->default('pending');
             $table->timestamp('tanggal_laporan')->useCurrent();
             $table->unsignedBigInteger('bidang_id');
             $table->timestamps();
+
             $table->foreign('bidang_id')->references('id')->on('bidangs')->cascadeOnDelete();
         });
+
 
 
 

@@ -18,6 +18,22 @@
             </div>
         </div>
     </div>
+    <!-- Flash Message -->
+    @if (session('success'))
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
 
     <!-- Profile Section -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -29,46 +45,11 @@
                     <div class="text-center">
                         <div class="relative inline-block">
                             <img class="w-32 h-32 rounded-full object-cover border-4 border-blue-100"
-                                src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->nama ?? 'User') . '&color=7c3aed&background=ede9fe' }}"
+                                src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'User') . '&color=7c3aed&background=ede9fe' }}"
                                 alt="Profile Picture">
-                            <button
-                                class="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-whitee p-2 rounded-full  transition duration-300">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
-                                    </path>
-                                </svg>
-                            </button>
                         </div>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">{{ Auth::user()->nama ?? 'Nama User' }}</h3>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900">{{ Auth::user()->name ?? 'Nama User' }}</h3>
                         <p class="text-sm text-gray-500">{{ Auth::user()->email ?? 'email@example.com' }}</p>
-
-                        <div class="mt-6">
-                            <input type="file" id="avatar" name="avatar" class="sr-only" accept="image/*">
-                            <label for="avatar"
-                                class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-300">
-                                Ganti Foto
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Account Stats -->
-                <div class="mt-6 bg-white rounded-lg shadow border border-gray-200 p-6">
-                    <h4 class="text-lg font-medium text-gray-900 mb-4">Statistik Akun</h4>
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Total Laporan</span>
-                            <span class="font-medium">12</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Laporan Selesai</span>
-                            <span class="font-medium text-green-600">8</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Bergabung Sejak</span>
-                            <span class="font-medium">Jan 2024</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -76,7 +57,7 @@
             <!-- Form Section -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow border border-gray-200">
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('warga.profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -87,8 +68,8 @@
                             <div class="mb-6">
                                 <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">Nama
                                     Lengkap</label>
-                                <input type="text" id="nama" name="nama"
-                                    value="{{ old('nama', Auth::user()->nama ?? 'John Doe') }}" required
+                                <input type="text" id="nama" name="name"
+                                    value="{{ old('name', Auth::user()->name ?? 'John Doe') }}" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
 
@@ -104,8 +85,8 @@
                             <div class="mb-6">
                                 <label for="telepon" class="block text-sm font-medium text-gray-700 mb-2">Nomor
                                     Telepon</label>
-                                <input type="tel" id="telepon" name="telepon"
-                                    value="{{ old('telepon', Auth::user()->telepon ?? '081234567890') }}"
+                                <input type="tel" id="telepon" name="no_telepon"
+                                    value="{{ old('no_telepon', Auth::user()->no_telepon ?? '081234567890') }}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="081234567890">
                             </div>
@@ -133,18 +114,18 @@
                                     <select id="jenis_kelamin" name="jenis_kelamin"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                         <option value="">Pilih Jenis Kelamin</option>
-                                        <option value="L"
-                                            {{ old('jenis_kelamin', Auth::user()->jenis_kelamin ?? '') == 'L' ? 'selected' : '' }}>
+                                        <option value="Laki-Laki"
+                                            {{ old('jenis_kelamin', Auth::user()->jenis_kelamin ?? '') == 'Laki-Laki' ? 'selected' : '' }}>
                                             Laki-laki</option>
-                                        <option value="P"
-                                            {{ old('jenis_kelamin', Auth::user()->jenis_kelamin ?? '') == 'P' ? 'selected' : '' }}>
+                                        <option value="Perempuan"
+                                            {{ old('jenis_kelamin', Auth::user()->jenis_kelamin ?? '') == 'Perempuan' ? 'selected' : '' }}>
                                             Perempuan</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Password Section -->
+                        {{-- <!-- Password Section -->
                         <div class="border-t border-gray-200 p-6">
                             <h3 class="text-lg font-medium text-gray-900 mb-6">Ubah Password</h3>
                             <p class="text-sm text-gray-600 mb-4">Kosongkan jika tidak ingin mengubah password</p>
@@ -170,7 +151,7 @@
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Submit Section -->
                         <div class="border-t border-gray-200 p-6">

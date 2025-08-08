@@ -26,4 +26,5 @@ class Bidang extends Model
     {
         return $this->hasMany(Laporan::class);
     }
+    
 }
