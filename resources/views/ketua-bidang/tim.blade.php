@@ -173,13 +173,14 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
                                 <textarea rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline -none focus:ring-2 focus:ring-green-500"
                                     placeholder="Deskripsi tugas tim"></textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jadwal Kerja</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Laporan</label>
                                 <select
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="">Masukan Laporan yang ingin dieksekusi</option>
                                     <option>Senin - Jumat</option>
                                     <option>Senin - Sabtu</option>
                                     <option>Setiap Hari</option>

@@ -29,44 +29,18 @@
                 </button>
             </div>
         </div>
-
         <!-- Tim Cards -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Tim Rutin Cards -->
-            @forelse ($tim_rutin ?? [] as $tim)
+            @foreach ($bidangs as $bidang)
                 <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="rutin">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Tim
-                                Rutin</span>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button class="text-gray-400 hover:text-blue-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button class="text-gray-400 hover:text-red-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $tim['nama'] ?? 'Tim Pemeliharaan Rutin' }}</h3>
-                    <p class="text-sm text-gray-600 mb-4">
-                        {{ $tim['deskripsi'] ?? 'Tim untuk pemeliharaan infrastruktur rutin harian' }}</p>
-
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{$bidang->nama}}</h3>
+                    <p class="text-sm text-gray-600 mb-4">Tim untuk pemeliharaan infrastruktur rutin area
+                    </p>
                     <div class="grid grid-cols-2 gap-4 text-sm mb-4">
                         <div>
                             <span class="text-gray-500">Anggota:</span>
-                            <span class="font-medium">{{ $tim['jumlah_anggota'] ?? '5' }} orang</span>
+                            <span class="font-medium">{{ 4 }} orang</span>
                         </div>
                         <div>
                             <span class="text-gray-500">Status:</span>
@@ -77,25 +51,12 @@
                     <div class="border-t pt-4">
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500">Jadwal:</span>
-                            <span class="font-medium">{{ $tim['jadwal'] ?? 'Senin - Jumat' }}</span>
+                            <span class="font-medium">Senin - Jumat</span>
                         </div>
-                        <div class="mt-2">
+                        <div class="flex mt-3 justify-between gap-6">
                             <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                                 Lihat Detail →
                             </a>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <!-- Data dummy Tim Rutin -->
-                @for ($i = 1; $i <= 3; $i++)
-                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="rutin">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Tim
-                                    Rutin</span>
-                            </div>
                             <div class="flex space-x-1">
                                 <button class="text-gray-400 hover:text-blue-600 p-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,159 +74,9 @@
                                 </button>
                             </div>
                         </div>
-
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Tim Pemeliharaan {{ $i }}</h3>
-                        <p class="text-sm text-gray-600 mb-4">Tim untuk pemeliharaan infrastruktur rutin area
-                            {{ $i }}</p>
-
-                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                            <div>
-                                <span class="text-gray-500">Anggota:</span>
-                                <span class="font-medium">{{ 4 + $i }} orang</span>
-                            </div>
-                            <div>
-                                <span class="text-gray-500">Status:</span>
-                                <span class="font-medium text-green-600">Aktif</span>
-                            </div>
-                        </div>
-
-                        <div class="border-t pt-4">
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-500">Jadwal:</span>
-                                <span class="font-medium">Senin - Jumat</span>
-                            </div>
-                            <div class="mt-2">
-                                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    Lihat Detail →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endfor
-            @endforelse
-
-            <!-- Tim Non-Rutin Cards -->
-            @forelse ($tim_non_rutin ?? [] as $tim)
-                <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="non-rutin">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">Tim
-                                Non-Rutin</span>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button class="text-gray-400 hover:text-blue-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button class="text-gray-400 hover:text-red-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $tim['nama'] ?? 'Tim Proyek Khusus' }}</h3>
-                    <p class="text-sm text-gray-600 mb-4">{{ $tim['deskripsi'] ?? 'Tim untuk penanganan proyek khusus' }}
-                    </p>
-
-                    <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                        <div>
-                            <span class="text-gray-500">Anggota:</span>
-                            <span class="font-medium">{{ $tim['jumlah_anggota'] ?? '8' }} orang</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-500">Status:</span>
-                            <span class="font-medium text-blue-600">{{ $tim['status'] ?? 'Dalam Tugas' }}</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t pt-4">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-500">Deadline:</span>
-                            <span class="font-medium">{{ $tim['deadline'] ?? '30 Des 2024' }}</span>
-                        </div>
-                        <div class="mt-2">
-                            <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                Lihat Detail →
-                            </a>
-                        </div>
                     </div>
                 </div>
-            @empty
-                <!-- Data dummy Tim Non-Rutin -->
-                @for ($i = 1; $i <= 4; $i++)
-                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="non-rutin">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                                <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">Tim
-                                    Non-Rutin</span>
-                            </div>
-                            <div class="flex space-x-1">
-                                <button class="text-gray-400 hover:text-blue-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="text-gray-400 hover:text-red-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        @php
-                            $teamNames = ['Proyek Jembatan', 'Emergency Response', 'Renovasi Fasum', 'Tim Darurat'];
-                            $statuses = ['Dalam Tugas', 'Standby', 'Selesai'];
-                            $randomStatus = $statuses[array_rand($statuses)];
-                            $statusColors = [
-                                'Dalam Tugas' => 'text-blue-600',
-                                'Standby' => 'text-yellow-600',
-                                'Selesai' => 'text-green-600',
-                            ];
-                        @endphp
-
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $teamNames[$i - 1] }}</h3>
-                        <p class="text-sm text-gray-600 mb-4">Tim khusus untuk menangani
-                            {{ strtolower($teamNames[$i - 1]) }}</p>
-
-                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                            <div>
-                                <span class="text-gray-500">Anggota:</span>
-                                <span class="font-medium">{{ 6 + $i }} orang</span>
-                            </div>
-                            <div>
-                                <span class="text-gray-500">Status:</span>
-                                <span class="font-medium {{ $statusColors[$randomStatus] }}">{{ $randomStatus }}</span>
-                            </div>
-                        </div>
-
-                        <div class="border-t pt-4">
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-500">Deadline:</span>
-                                <span class="font-medium">{{ date('d M Y', strtotime("+{$i} weeks")) }}</span>
-                            </div>
-                            <div class="mt-2">
-                                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    Lihat Detail →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endfor
-            @endforelse
+            @endforeach
         </div>
     </div>
 
@@ -304,8 +115,7 @@
                                 class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
                                 Batal
                             </button>
-                            <button type="submit"
-                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
                                 Simpan
                             </button>
                         </div>
