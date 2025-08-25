@@ -6,6 +6,7 @@ use App\Models\Bidang;
 use App\Models\Laporan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -20,9 +21,20 @@ class AdminController extends Controller
 
     public function laporan()
     {
-        return view('admin.laporan');
+        $laporans = Laporan::orderBy('created_at', 'desc')->paginate(10);
+        $stats = [
+            'pending' => $laporans->where('status_verifikasi', 'pending')->count(),
+            'diterima' => $laporans->where('status_verifikasi', 'diterima')->count(),
+            'selesai' => $laporans->where('status_verifikasi', 'selesai')->count(),
+            'ditolak' => $laporans->where('status_verifikasi', 'ditolak')->count(),
+        ];
+        return view('admin.laporan', compact('laporans', 'stats'));
     }
-
+    public function detailLaporan($id)
+    {
+        $laporan = Laporan::find($id);
+        return view('admin.detail.laporan', compact('laporan'));
+    }
     public function bidang()
     {
         $bidangs = Bidang::all();
@@ -31,6 +43,7 @@ class AdminController extends Controller
 
     public function users()
     {
-        return view('admin.kelola-user');
+        $users = User::orderBy('created_at', 'desc')->paginate(10);
+        return view('admin.kelola-user', compact('users'));
     }
 }

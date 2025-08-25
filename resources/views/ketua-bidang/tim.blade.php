@@ -557,7 +557,7 @@
                     row.style.transition = 'opacity 0.5s ease, background-color 0.2s ease';
                     row.style.opacity = '1';
                 }, index * 50);
-            });
+            });s
         });
     </script>
 @endpush

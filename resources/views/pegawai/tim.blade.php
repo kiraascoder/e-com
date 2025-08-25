@@ -21,284 +21,231 @@
 
     <!-- Action Buttons -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div class="flex space-x-3 mb-4 sm:mb-0">                
+            </div>            
+        </div>
 
+        <!-- Tabel Tim -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Nama Tim
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Tipe
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Deskripsi
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Anggota
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Jadwal/Status
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Tim Rutin Rows -->
+                        @foreach ($timRutin ?? [] as $tim)
+                            <tr class="hover:bg-gray-50 transition-all duration-200 tim-row" data-type="rutin">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $tim->nama_tim }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                                        Tim Rutin
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-600 max-w-xs">
+                                        {{ \Illuminate\Support\Str::words($tim->deskripsi, 8, '...') }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $tim->anggota->count() ?? 0 }} orang
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-600">{{ $tim->jadwal_pelaksanaan }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <a href="{{ route('pegawai.rutin.show', $tim->id) }}"
+                                            class="text-blue-600 hover:text-blue-800 transition duration-200">
+                                            Detail
+                                        </a>                                  
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
 
-        <!-- Tim Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Tim Rutin Cards -->
-            @forelse ($tim_rutin ?? [] as $tim)
-                <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="rutin">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Tim
-                                Rutin</span>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button class="text-gray-400 hover:text-blue-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button class="text-gray-400 hover:text-red-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                        <!-- Tim Non-Rutin Rows -->
+                        @foreach ($timNonRutin ?? [] as $tim)
+                            <tr class="hover:bg-gray-50 transition-all duration-200 tim-row" data-type="non-rutin">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $tim->nama_tim }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        <div class="w-2 h-2 bg-purple-500 rounded-full mr-1"></div>
+                                        Tim Non-Rutin
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-600 max-w-xs">
+                                        {{ \Illuminate\Support\Str::words($tim->deskripsi, 8, '...') }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $tim->anggota->count() ?? 0 }} orang
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ $tim->status ?? 'Aktif' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <a href="{{ route('pegawai.nonrutin.show', $tim->id) }}"
+                                            class="text-blue-600 hover:text-blue-800 transition duration-200">
+                                            Detail
+                                        </a>                                
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
 
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $tim['nama'] ?? 'Tim Pemeliharaan Rutin' }}</h3>
-                    <p class="text-sm text-gray-600 mb-4">
-                        {{ $tim['deskripsi'] ?? 'Tim untuk pemeliharaan infrastruktur rutin harian' }}</p>
-
-                    <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                        <div>
-                            <span class="text-gray-500">Anggota:</span>
-                            <span class="font-medium">{{ $tim['jumlah_anggota'] ?? '5' }} orang</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-500">Status:</span>
-                            <span class="font-medium text-green-600">Aktif</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t pt-4">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-500">Jadwal:</span>
-                            <span class="font-medium">{{ $tim['jadwal'] ?? 'Senin - Jumat' }}</span>
-                        </div>
-                        <div class="mt-2">
-                            <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                Lihat Detail →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <!-- Data dummy Tim Rutin -->
-                @for ($i = 1; $i <= 3; $i++)
-                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="rutin">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Tim
-                                    Rutin</span>
-                            </div>
-                            <div class="flex space-x-1">
-                                <button class="text-gray-400 hover:text-blue-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="text-gray-400 hover:text-red-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Tim Pemeliharaan {{ $i }}</h3>
-                        <p class="text-sm text-gray-600 mb-4">Tim untuk pemeliharaan infrastruktur rutin area
-                            {{ $i }}</p>
-
-                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                            <div>
-                                <span class="text-gray-500">Anggota:</span>
-                                <span class="font-medium">{{ 4 + $i }} orang</span>
-                            </div>
-                            <div>
-                                <span class="text-gray-500">Status:</span>
-                                <span class="font-medium text-green-600">Aktif</span>
-                            </div>
-                        </div>
-
-                        <div class="border-t pt-4">
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-500">Jadwal:</span>
-                                <span class="font-medium">Senin - Jumat</span>
-                            </div>
-                            <div class="mt-2">
-                                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    Lihat Detail →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endfor
-            @endforelse
-
-            <!-- Tim Non-Rutin Cards -->
-            @forelse ($tim_non_rutin ?? [] as $tim)
-                <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="non-rutin">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">Tim
-                                Non-Rutin</span>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button class="text-gray-400 hover:text-blue-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button class="text-gray-400 hover:text-red-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $tim['nama'] ?? 'Tim Proyek Khusus' }}</h3>
-                    <p class="text-sm text-gray-600 mb-4">{{ $tim['deskripsi'] ?? 'Tim untuk penanganan proyek khusus' }}
-                    </p>
-
-                    <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                        <div>
-                            <span class="text-gray-500">Anggota:</span>
-                            <span class="font-medium">{{ $tim['jumlah_anggota'] ?? '8' }} orang</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-500">Status:</span>
-                            <span class="font-medium text-blue-600">{{ $tim['status'] ?? 'Dalam Tugas' }}</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t pt-4">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-500">Deadline:</span>
-                            <span class="font-medium">{{ $tim['deadline'] ?? '30 Des 2024' }}</span>
-                        </div>
-                        <div class="mt-2">
-                            <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                Lihat Detail →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <!-- Data dummy Tim Non-Rutin -->
-                @for ($i = 1; $i <= 4; $i++)
-                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="non-rutin">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                                <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">Tim
-                                    Non-Rutin</span>
-                            </div>
-                            <div class="flex space-x-1">
-                                <button class="text-gray-400 hover:text-blue-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="text-gray-400 hover:text-red-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        @php
-                            $teamNames = ['Proyek Jembatan', 'Emergency Response', 'Renovasi Fasum', 'Tim Darurat'];
-                            $statuses = ['Dalam Tugas', 'Standby', 'Selesai'];
-                            $randomStatus = $statuses[array_rand($statuses)];
-                            $statusColors = [
-                                'Dalam Tugas' => 'text-blue-600',
-                                'Standby' => 'text-yellow-600',
-                                'Selesai' => 'text-green-600',
-                            ];
-                        @endphp
-
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $teamNames[$i - 1] }}</h3>
-                        <p class="text-sm text-gray-600 mb-4">Tim khusus untuk menangani
-                            {{ strtolower($teamNames[$i - 1]) }}</p>
-
-                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                            <div>
-                                <span class="text-gray-500">Anggota:</span>
-                                <span class="font-medium">{{ 6 + $i }} orang</span>
-                            </div>
-                            <div>
-                                <span class="text-gray-500">Status:</span>
-                                <span class="font-medium {{ $statusColors[$randomStatus] }}">{{ $randomStatus }}</span>
-                            </div>
-                        </div>
-
-                        <div class="border-t pt-4">
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-500">Deadline:</span>
-                                <span class="font-medium">{{ date('d M Y', strtotime("+{$i} weeks")) }}</span>
-                            </div>
-                            <div class="mt-2">
-                                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    Lihat Detail →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endfor
-            @endforelse
+                        <!-- Empty State -->
+                        @if ((!isset($timRutin) || count($timRutin) === 0) && (!isset($timNonRutin) || count($timNonRutin) === 0))
+                            <tr id="emptyState">
+                                <td colspan="6" class="px-6 py-12 text-center">
+                                    <div class="text-gray-400">
+                                        <svg class="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                            </path>
+                                        </svg>
+                                        <h3 class="text-sm font-medium text-gray-900 mb-1">Belum ada tim</h3>
+                                        <p class="text-sm text-gray-500">Mulai dengan menambahkan tim rutin atau non-rutin
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- Modal Form Tim Rutin -->
-    <div id="modalTimRutin" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <!-- Modal Form Tim Non Rutin -->
+    <div id="modalTimNonRutin" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0, 0, 0, 0.1);"></div>
+
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Tim Rutin</h3>
-                    <form>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Tambah Tim Non Rutin</h3>
+                        <button id="btnCloseModalNonRutin"
+                            class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form method="POST" action="{{ route('ketua.nonrutin.store') }}">
+                        @csrf
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Tim</label>
-                                <input type="text"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                <input type="text" name="nama_tim" value="{{ old('nama_tim') }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('nama_tim') border-red-300 @enderror"
                                     placeholder="Contoh: Tim Pemeliharaan Jalan">
+                                @error('nama_tim')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                                <textarea rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    placeholder="Deskripsi tugas tim"></textarea>
+                                <textarea rows="3" name="deskripsi"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('deskripsi') border-red-300 @enderror"
+                                    placeholder="Deskripsi tugas tim">{{ old('deskripsi') }}</textarea>
+                                @error('deskripsi')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jadwal Kerja</label>
-                                <select
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                                    <option>Senin - Jumat</option>
-                                    <option>Senin - Sabtu</option>
-                                    <option>Setiap Hari</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Penanggung Jawab</label>
+                                <select name="penanggung_jawab_id"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('penanggung_jawab_id') border-red-300 @enderror">
+                                    <option value="">Pilih Penanggung Jawab</option>
+                                    @foreach ($users ?? [] as $pegawai)
+                                        <option value="{{ $pegawai->id }}"
+                                            {{ old('penanggung_jawab_id') == $pegawai->id ? 'selected' : '' }}>
+                                            {{ $pegawai->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
+                                @error('penanggung_jawab_id')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Laporan</label>
+                                <select name="laporan_id"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('laporan_id') border-red-300 @enderror">
+                                    <option value="">Pilih Laporan yang ingin dieksekusi</option>
+                                    @foreach ($laporans ?? [] as $laporan)
+                                        <option value="{{ $laporan->id }}"
+                                            {{ old('laporan_id') == $laporan->id ? 'selected' : '' }}>
+                                            {{ $laporan->judul }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('laporan_id')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
+
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button type="button" id="btnBatalRutin"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                            <input type="hidden" name="form_type" value="nonrutin">
+                            <button type="button" id="btnBatalNonRutin"
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200 transform hover:scale-105">
                                 Simpan
                             </button>
                         </div>
@@ -308,46 +255,96 @@
         </div>
     </div>
 
-    <!-- Modal Form Tim Non-Rutin -->
-    <div id="modalTimNonRutin" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <!-- Modal Form Tim Rutin -->
+    <div id="modalTimRutin" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0, 0, 0, 0.1);"></div>
+
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Tim Non-Rutin</h3>
-                    <form>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Tambah Tim Rutin</h3>
+                        <button id="btnCloseModalRutin" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form method="POST" action="{{ route('ketua.rutin.store') }}">
+                        @csrf
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Tim</label>
-                                <input type="text"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                <input type="text" name="nama_tim" value="{{ old('nama_tim') }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 @error('nama_tim') border-red-300 @enderror"
                                     placeholder="Contoh: Tim Proyek Jembatan">
+                                @error('nama_tim')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Proyek</label>
-                                <textarea rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                    placeholder="Deskripsi proyek khusus"></textarea>
+                                <textarea rows="3" name="deskripsi"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 @error('deskripsi') border-red-300 @enderror"
+                                    placeholder="Deskripsi proyek khusus">{{ old('deskripsi') }}</textarea>
+                                @error('deskripsi')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
-                                    <input type="date"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
-                                    <input type="date"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Penanggung Jawab</label>
+                                <select name="penanggung_jawab_id"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 @error('penanggung_jawab_id') border-red-300 @enderror">
+                                    <option value="">Pilih Penanggung Jawab</option>
+                                    @foreach ($users ?? [] as $pegawai)
+                                        <option value="{{ $pegawai->id }}"
+                                            {{ old('penanggung_jawab_id') == $pegawai->id ? 'selected' : '' }}>
+                                            {{ $pegawai->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('penanggung_jawab_id')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jadwal Kerja</label>
+                                <select name="jadwal_pelaksanaan"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 @error('jadwal_pelaksanaan') border-red-300 @enderror">
+                                    <option value="">Pilih Jadwal</option>
+                                    <option value="Senin - Jumat"
+                                        {{ old('jadwal_pelaksanaan') == 'Senin - Jumat' ? 'selected' : '' }}>Senin - Jumat
+                                    </option>
+                                    <option value="Senin - Sabtu"
+                                        {{ old('jadwal_pelaksanaan') == 'Senin - Sabtu' ? 'selected' : '' }}>Senin - Sabtu
+                                    </option>
+                                    <option value="Setiap Hari"
+                                        {{ old('jadwal_pelaksanaan') == 'Setiap Hari' ? 'selected' : '' }}>Setiap Hari
+                                    </option>
+                                </select>
+                                @error('jadwal_pelaksanaan')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
+
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button type="button" id="btnBatalNonRutin"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                            <input type="hidden" name="form_type" value="rutin">
+                            <button type="button" id="btnBatalRutin"
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                                class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-200 transform hover:scale-105">
                                 Simpan
                             </button>
                         </div>
@@ -361,64 +358,165 @@
 
 @push('scripts')
     <script>
-        // Modal handlers
-        document.getElementById('btnTambahTimRutin').addEventListener('click', function() {
-            document.getElementById('modalTimRutin').classList.remove('hidden');
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal Animation Functions
+            function showModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
 
-        document.getElementById('btnTambahTimNonRutin').addEventListener('click', function() {
-            document.getElementById('modalTimNonRutin').classList.remove('hidden');
-        });
+                modal.classList.remove('hidden');
 
-        document.getElementById('btnBatalRutin').addEventListener('click', function() {
-            document.getElementById('modalTimRutin').classList.add('hidden');
-        });
+                // Force reflow
+                modal.offsetHeight;
 
-        document.getElementById('btnBatalNonRutin').addEventListener('click', function() {
-            document.getElementById('modalTimNonRutin').classList.add('hidden');
-        });
+                // Animate in
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
 
-        // Filter handlers
-        const filterButtons = ['filterSemua', 'filterRutin', 'filterNonRutin'];
-        const timCards = document.querySelectorAll('.tim-card');
+                content.classList.remove('opacity-0', 'scale-95');
+                content.classList.add('opacity-100', 'scale-100');
+            }
 
-        filterButtons.forEach(buttonId => {
-            document.getElementById(buttonId).addEventListener('click', function() {
-                // Update active button
-                filterButtons.forEach(id => {
-                    const btn = document.getElementById(id);
-                    btn.classList.remove('bg-blue-100', 'text-blue-800');
-                    btn.classList.add('text-gray-600', 'hover:bg-gray-100');
-                });
+            function hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
 
-                this.classList.remove('text-gray-600', 'hover:bg-gray-100');
-                this.classList.add('bg-blue-100', 'text-blue-800');
+                // Animate out
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
 
-                // Filter cards
-                const filterType = buttonId.replace('filter', '').toLowerCase();
+                content.classList.remove('opacity-100', 'scale-100');
+                content.classList.add('opacity-0', 'scale-95');
 
-                timCards.forEach(card => {
-                    if (filterType === 'semua') {
-                        card.style.display = 'block';
-                    } else if (filterType === 'rutin' && card.dataset.type === 'rutin') {
-                        card.style.display = 'block';
-                    } else if (filterType === 'nonrutin' && card.dataset.type === 'non-rutin') {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
+                // Hide after animation
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+
+            // Auto-open modal if there are validation errors
+            @if ($errors->any() && old('_token'))
+                @if (old('form_type') === 'rutin')
+                    showModal('modalTimRutin');
+                @elseif (old('form_type') === 'nonrutin')
+                    showModal('modalTimNonRutin');
+                @endif
+            @endif
+
+            // Modal open handlers
+            document.getElementById('btnTambahTimNonRutin').addEventListener('click', function() {
+                showModal('modalTimNonRutin');
+            });
+
+            document.getElementById('btnTambahTimRutin').addEventListener('click', function() {
+                showModal('modalTimRutin');
+            });
+
+            // Modal close handlers
+            document.getElementById('btnBatalNonRutin').addEventListener('click', function() {
+                hideModal('modalTimNonRutin');
+            });
+
+            document.getElementById('btnBatalRutin').addEventListener('click', function() {
+                hideModal('modalTimRutin');
+            });
+
+            document.getElementById('btnCloseModalNonRutin').addEventListener('click', function() {
+                hideModal('modalTimNonRutin');
+            });
+
+            document.getElementById('btnCloseModalRutin').addEventListener('click', function() {
+                hideModal('modalTimRutin');
+            });
+
+            // Filter handlers with smooth transitions
+            const filterButtons = ['filterSemua', 'filterRutin', 'filterNonRutin'];
+            const timRows = document.querySelectorAll('.tim-row');
+
+            filterButtons.forEach(buttonId => {
+                document.getElementById(buttonId).addEventListener('click', function() {
+                    // Update active button
+                    filterButtons.forEach(id => {
+                        const btn = document.getElementById(id);
+                        btn.classList.remove('bg-blue-100', 'text-blue-800');
+                        btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+                    });
+
+                    this.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                    this.classList.add('bg-blue-100', 'text-blue-800');
+
+                    // Filter table rows with smooth animation
+                    const filterType = buttonId.replace('filter', '').toLowerCase();
+
+                    timRows.forEach((row, index) => {
+                        setTimeout(() => {
+                            if (filterType === 'semua') {
+                                row.style.display = 'table-row';
+                                row.style.opacity = '0';
+
+                                setTimeout(() => {
+                                    row.style.opacity = '1';
+                                }, 50);
+                            } else if (filterType === 'rutin' && row.dataset
+                                .type === 'rutin') {
+                                row.style.display = 'table-row';
+                                row.style.opacity = '0';
+
+                                setTimeout(() => {
+                                    row.style.opacity = '1';
+                                }, 50);
+                            } else if (filterType === 'nonrutin' && row.dataset
+                                .type === 'non-rutin') {
+                                row.style.display = 'table-row';
+                                row.style.opacity = '0';
+
+                                setTimeout(() => {
+                                    row.style.opacity = '1';
+                                }, 50);
+                            } else {
+                                row.style.opacity = '0';
+
+                                setTimeout(() => {
+                                    row.style.display = 'none';
+                                }, 200);
+                            }
+                        }, index * 30); // Faster stagger for table rows
+                    });
                 });
             });
-        });
 
-        // Close modal when clicking outside
-        document.addEventListener('click', function(e) {
-            if (e.target.id === 'modalTimRutin') {
-                document.getElementById('modalTimRutin').classList.add('hidden');
-            }
-            if (e.target.id === 'modalTimNonRutin') {
-                document.getElementById('modalTimNonRutin').classList.add('hidden');
-            }
+            // Close modal when clicking on backdrop
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal-backdrop')) {
+                    if (e.target.closest('#modalTimRutin')) {
+                        hideModal('modalTimRutin');
+                    }
+                    if (e.target.closest('#modalTimNonRutin')) {
+                        hideModal('modalTimNonRutin');
+                    }
+                }
+            });
+
+            // ESC key to close modals
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideModal('modalTimRutin');
+                    hideModal('modalTimNonRutin');
+                }
+            });
+
+            // Add smooth transitions to table rows on load
+            timRows.forEach((row, index) => {
+                row.style.opacity = '0';
+
+                setTimeout(() => {
+                    row.style.transition = 'opacity 0.5s ease, background-color 0.2s ease';
+                    row.style.opacity = '1';
+                }, index * 50);
+            });
+            s
         });
     </script>
 @endpush

@@ -15,18 +15,18 @@ class TimNonRutin extends Model
 
     public function penanggungJawab()
     {
-        return $this->belongsTo(User::class, 'penanggung_jawab_id')
-            ->withDefault([
-                'name'  => 'Belum ditetapkan',
-                'email' => '—',
-            ]);
+        return $this->belongsTo(User::class, 'penanggung_jawab_id');
     }
-
 
     public function anggota()
     {
-        return $this->belongsToMany(User::class, 'tim_rutin_user', 'tim_rutin_id', 'user_id')
-            ->withTimestamps();
+        
+        return $this->belongsToMany(
+            User::class,
+            'tim_non_rutin_user',
+            'tim_non_rutin_id', 
+            'user_id'
+        )->withTimestamps();
     }
     public function laporanNonRutin()
     {

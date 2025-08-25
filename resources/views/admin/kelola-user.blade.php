@@ -59,96 +59,57 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @php
-                        $users = [
-                            [
-                                'id' => 1,
-                                'nama' => 'Ahmad Wijaya',
-                                'email' => 'ahmad.wijaya@admin.com',
-                                'role' => 'Admin',
-                                'status' => 'Aktif',
-                                'last_login' => '2 jam yang lalu',
-                            ],
-                            [
-                                'id' => 2,
-                                'nama' => 'Siti Nurhaliza',
-                                'email' => 'siti.nurhaliza@supervisor.com',
-                                'role' => 'Supervisor',
-                                'status' => 'Aktif',
-                                'last_login' => '1 hari yang lalu',
-                            ],
-                            [
-                                'id' => 3,
-                                'nama' => 'Budi Santoso',
-                                'email' => 'budi.santoso@teknisi.com',
-                                'role' => 'Teknisi',
-                                'status' => 'Tidak Aktif',
-                                'last_login' => '1 minggu yang lalu',
-                            ],
-                            [
-                                'id' => 4,
-                                'nama' => 'Dewi Lestari',
-                                'email' => 'dewi.lestari@teknisi.com',
-                                'role' => 'Teknisi',
-                                'status' => 'Aktif',
-                                'last_login' => '3 jam yang lalu',
-                            ],
-                            [
-                                'id' => 5,
-                                'nama' => 'Eko Prasetyo',
-                                'email' => 'eko.prasetyo@supervisor.com',
-                                'role' => 'Supervisor',
-                                'status' => 'Aktif',
-                                'last_login' => '30 menit yang lalu',
-                            ],
-                        ];
-                    @endphp
-
                     @foreach ($users as $user)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user['id'] }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $user['nama'] }}</div>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $user['email'] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $user->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php
+                                    $role = $user->role ?? 'User';
                                     $roleColors = [
                                         'Admin' => 'bg-red-100 text-red-800',
                                         'Supervisor' => 'bg-blue-100 text-blue-800',
                                         'Teknisi' => 'bg-green-100 text-green-800',
                                     ];
+                                    $roleClass = $roleColors[$role] ?? 'bg-gray-100 text-gray-800';
                                 @endphp
                                 <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $roleColors[$user['role']] }}">
-                                    {{ $user['role'] }}
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $roleClass }}">
+                                    {{ $role }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                {{ $user['status'] == 'Aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ $user['status'] }}
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                {{ $user->is_active ?? true ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                    {{ $user->is_active ?? true ? 'Aktif' : 'Nonaktif' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $user['last_login'] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                {{ optional($user->last_login_at)->format('d M Y H:i') ?? '—' }}
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
                                     <button class="btnEdit text-blue-600 hover:text-blue-900" title="Edit"
-                                        data-id="{{ $user['id'] }}" data-nama="{{ $user['nama'] }}"
-                                        data-email="{{ $user['email'] }}" data-role="{{ $user['role'] }}">
+                                        data-id="{{ $user->id }}" data-nama="{{ $user->name }}"
+                                        data-email="{{ $user->email }}" data-role="{{ $user->role }}">
+                                        <!-- ikon edit -->
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                            </path>
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
                                     <button class="btnHapus text-red-600 hover:text-red-900" title="Hapus"
-                                        data-id="{{ $user['id'] }}" data-nama="{{ $user['nama'] }}">
+                                        data-id="{{ $user->id }}" data-nama="{{ $user->name }}">
+                                        <!-- ikon hapus -->
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                            </path>
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
                                 </div>
@@ -156,6 +117,7 @@
                         </tr>
                     @endforeach
                 </tbody>
+p
             </table>
         </div>
 

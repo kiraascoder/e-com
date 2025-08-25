@@ -7,17 +7,13 @@
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex items-center justify-between">
-                <div>
-                    <div class="flex items-center mb-2">
-                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Tim Rutin</span>
-                    </div>
-                    <h1 class="text-2xl font-bold">Tim {{ $timNonRutin->nama_tim }}</h1>
+                <div>                    
+                    <h1 class="text-2xl font-bold">Tim {{ $timRutin->nama_tim }}</h1>
                     <p class="mt-1 text-blue-100">Tim untuk pemeliharaan infrastruktur rutin harian meliputi jalan, saluran
                         air, dan fasilitas umum</p>
                 </div>
                 <div class="flex space-x-3">
-                    <a href="{{ route('ketua.tim') }}"
+                    <a href="{{ route('pegawai.tim') }}"
                         class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
                         ← Kembali
                     </a>
@@ -39,22 +35,20 @@
                             <p class="text-sm text-green-600 font-medium">Aktif</p>
                         </div>
                         <div>
-                            <label class="text-sm font-medium text-gray-500">Laporan yang Ditangani</label>
-                            <a href="{{ route('ketua.detail-laporan.show', $timNonRutin->laporan->id) }}">
-                                <p class="text-sm text-blue-900">{{ $timNonRutin->laporan->judul }}</p>
-                            </a>
+                            <label class="text-sm font-medium text-gray-500">Jadwal Kerja</label>
+                            <p class="text-sm text-gray-900">{{ $timRutin->jadwal_pelaksanaan }}</p>
                         </div>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Tanggal Dibentuk</label>
-                            <p class="text-sm text-gray-900">{{ $timNonRutin->created_at }}</p>
+                            <p class="text-sm text-gray-900">{{ $timRutin->created_at }}</p>
                         </div>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Deskripsi Tim</label>
-                            <p class="text-sm text-gray-900">{{ $timNonRutin->deskripsi }}</p>
+                            <p class="text-sm text-gray-900">{{ $timRutin->deskripsi }}</p>
                         </div>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Penanggung Jawab</label>
-                            <p class="text-sm text-gray-900">{{ $timNonRutin->penanggungJawab->name }}</p>
+                            <p class="text-sm text-gray-900">{{ $timRutin->penanggungJawab->name }}</p>
                             {{-- <p class="text-xs text-gray-500">NIP: 196805121990031002</p> --}}
                         </div>
                     </div>
@@ -75,21 +69,17 @@
                     </div>
                     <div id="contentAnggota" class="tab-content p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">Daftar Anggota</h3>
-                            <button id="btnTambahAnggota"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                                + Tambah Anggota
-                            </button>
+                            <h3 class="text-lg font-semibold text-gray-900">Daftar Anggota</h3>                            
                         </div>
                         <div class="space-y-4">
-                            @if ($timNonRutinAnggota->penanggungJawab)
+                            @if ($timRutinAnggota->penanggungJawab)
                                 <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="ml-4">
                                             <p class="text-sm font-medium text-gray-900">
-                                                {{ $timNonRutinAnggota->penanggungJawab->name }}</p>
+                                                {{ $timRutinAnggota->penanggungJawab->name }}</p>
                                             <p class="text-xs text-gray-500">Email :
-                                                {{ $timNonRutinAnggota->penanggungJawab->email }}</p>
+                                                {{ $timRutinAnggota->penanggungJawab->email }}</p>
                                             <span
                                                 class="inline-flex px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full mt-1">
                                                 Penanggung Jawab
@@ -98,11 +88,11 @@
                                     </div>
                                     <div class="text-right">
                                         <p class="text-xs text-gray-500">Bergabung:
-                                            {{ $timNonRutinAnggota->penanggungJawab->created_at }}</p>
+                                            {{ $timRutinAnggota->penanggungJawab->created_at }}</p>
                                     </div>
                                 </div>
                             @endif
-                            @foreach ($timNonRutinAnggota->anggota ?? [] as $anggota)
+                            @foreach ($timRutinAnggota->anggota ?? [] as $anggota)
                                 <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="ml-4">
@@ -136,17 +126,7 @@
             <div
                 class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Tambah Tim Rutin</h3>
-                        <button id="btnCloseModalRutin" class="text-gray-400 hover:text-gray-600 transition duration-200">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <form method="POST" action="{{ route('ketua.nonanggota.store', [$timNonRutin->id]) }}">
+                    <form method="POST" action="{{ route('ketua.anggota.store', [$timRutin->id]) }}">
                         @csrf
                         <div class="space-y-4">
                             <div>
@@ -155,7 +135,7 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 @error('penanggung_jawab_id') border-red-300 @enderror">
                                     <option value="">Pilih Anggota</option>
                                     @foreach ($users ?? [] as $pegawai)
-                                        @if ($pegawai->id !== $timNonRutin->penanggung_jawab_id)
+                                        @if ($pegawai->id !== $timRutin->penanggung_jawab_id)
                                             <option value="{{ $pegawai->id }}"
                                                 {{ old('user_id') == $pegawai->id ? 'selected' : '' }}>
                                                 {{ $pegawai->name }}

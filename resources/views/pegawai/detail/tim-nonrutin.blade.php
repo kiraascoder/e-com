@@ -7,17 +7,13 @@
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex items-center justify-between">
-                <div>
-                    <div class="flex items-center mb-2">
-                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Tim Rutin</span>
-                    </div>
+                <div>                    
                     <h1 class="text-2xl font-bold">Tim {{ $timNonRutin->nama_tim }}</h1>
                     <p class="mt-1 text-blue-100">Tim untuk pemeliharaan infrastruktur rutin harian meliputi jalan, saluran
                         air, dan fasilitas umum</p>
                 </div>
                 <div class="flex space-x-3">
-                    <a href="{{ route('ketua.tim') }}"
+                    <a href="{{ route('pegawai.tim') }}"
                         class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
                         ← Kembali
                     </a>
@@ -40,9 +36,7 @@
                         </div>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Laporan yang Ditangani</label>
-                            <a href="{{ route('ketua.detail-laporan.show', $timNonRutin->laporan->id) }}">
-                                <p class="text-sm text-blue-900">{{ $timNonRutin->laporan->judul }}</p>
-                            </a>
+                            <p class="text-sm text-gray-900">{{ $timNonRutin->laporan->judul }}</p>                            
                         </div>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Tanggal Dibentuk</label>
@@ -76,10 +70,6 @@
                     <div id="contentAnggota" class="tab-content p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Daftar Anggota</h3>
-                            <button id="btnTambahAnggota"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                                + Tambah Anggota
-                            </button>
                         </div>
                         <div class="space-y-4">
                             @if ($timNonRutinAnggota->penanggungJawab)
@@ -137,7 +127,7 @@
                 class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Tambah Tim Rutin</h3>
+                        <h3 class="text-lg font-semibold text-gray-900"> Tim Rutin</h3>
                         <button id="btnCloseModalRutin" class="text-gray-400 hover:text-gray-600 transition duration-200">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

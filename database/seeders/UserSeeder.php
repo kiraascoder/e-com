@@ -78,7 +78,8 @@ class UserSeeder extends Seeder
             'alamat'        => 'Jl. Tim Kerja No. 4',
             'no_telepon'    => '081234567893',
             'tanggal_lahir' => '1990-04-20',
-            'bidang_id'     => null,
+            'bidang_id'     => 1,
+
         ]);
 
         // Pegawai Tim B
@@ -90,7 +91,7 @@ class UserSeeder extends Seeder
             'alamat'        => 'Jl. Tim Kerja No. 5',
             'no_telepon'    => '081234567894',
             'tanggal_lahir' => '1992-05-25',
-            'bidang_id'     => null,
+            'bidang_id'     => 1,
         ]);
 
         // Warga

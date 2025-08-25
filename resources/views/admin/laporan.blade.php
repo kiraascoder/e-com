@@ -19,7 +19,6 @@
         </div>
     </div>
 
-    <!-- Filter & Stats Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -32,8 +31,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm text-gray-600">Pending</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['pending'] ?? '23' }}</p>
+                        <p class="text-sm text-gray-600">Menunggu Verifikasi</p>
+                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['pending'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -42,28 +41,12 @@
                     <div class="p-2 bg-blue-100 rounded-lg">
                         <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                            </path>
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm text-gray-600">Ditugaskan</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['assigned'] ?? '15' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow p-4">
-                <div class="flex items-center">
-                    <div class="p-2 bg-purple-100 rounded-lg">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm text-gray-600">Dalam Proses</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['in_progress'] ?? '42' }}</p>
+                        <p class="text-sm text-gray-600">Diterima</p>
+                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['diterima'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -71,13 +54,26 @@
                 <div class="flex items-center">
                     <div class="p-2 bg-green-100 rounded-lg">
                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </div>
                     <div class="ml-4">
                         <p class="text-sm text-gray-600">Selesai</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['completed'] ?? '128' }}</p>
+                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['selesai'] ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <div class="flex items-center">
+                    <div class="p-2 bg-red-100 rounded-lg">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Ditolak</p>
+                        <p class="text-2xl font-semibold text-gray-900">{{ $stats['ditolak'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -85,42 +81,57 @@
 
         <!-- Filter Section -->
         <div class="bg-white rounded-lg shadow border border-gray-200 p-4 mb-6">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                <div class="flex flex-wrap gap-3">
-                    <select
-                        class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="">Semua Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="assigned">Ditugaskan</option>
-                        <option value="in_progress">Dalam Proses</option>
-                        <option value="completed">Selesai</option>
-                    </select>
-                    <select
-                        class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="">Semua Kategori</option>
-                        <option value="jalan">Jalan</option>
-                        <option value="drainase">Drainase</option>
-                        <option value="jembatan">Jembatan</option>
-                        <option value="lampu_jalan">Lampu Jalan</option>
-                        <option value="fasilitas_umum">Fasilitas Umum</option>
-                    </select>
-                    <select
-                        class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="">Semua Prioritas</option>
-                        <option value="tinggi">Tinggi</option>
-                        <option value="sedang">Sedang</option>
-                        <option value="rendah">Rendah</option>
-                    </select>
+            <form method="GET" action="">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    <div class="flex flex-wrap gap-3">
+                        <select name="status_verifikasi"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Semua Status</option>
+                            <option value="pending" {{ request('status_verifikasi') == 'pending' ? 'selected' : '' }}>
+                                Menunggu Verifikasi</option>
+                            <option value="diterima" {{ request('status_verifikasi') == 'diterima' ? 'selected' : '' }}>
+                                Diterima</option>
+                            <option value="ditolak" {{ request('status_verifikasi') == 'ditolak' ? 'selected' : '' }}>
+                                Ditolak</option>
+                            <option value="selesai" {{ request('status_verifikasi') == 'selesai' ? 'selected' : '' }}>
+                                Selesai</option>
+                        </select>
+                        <select name="bidang_id"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Semua Bidang</option>
+                            @foreach ($bidangs ?? [] as $bidang)
+                                <option value="{{ $bidang->id }}"
+                                    {{ request('bidang_id') == $bidang->id ? 'selected' : '' }}>
+                                    {{ $bidang->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <select name="sort_by"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Urutkan</option>
+                            <option value="tanggal_terbaru"
+                                {{ request('sort_by') == 'tanggal_terbaru' ? 'selected' : '' }}>Tanggal Terbaru</option>
+                            <option value="tanggal_terlama"
+                                {{ request('sort_by') == 'tanggal_terlama' ? 'selected' : '' }}>Tanggal Terlama</option>
+                            <option value="nama_az" {{ request('sort_by') == 'nama_az' ? 'selected' : '' }}>Nama A-Z
+                            </option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Cari judul laporan..."
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                            Cari
+                        </button>
+                        <a href=""
+                            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                            Reset
+                        </a>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <input type="text" placeholder="Cari laporan..."
-                        class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                    <button
-                        class="bg-blue-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
-                        Cari
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
 
         <!-- Laporan Table -->
@@ -134,9 +145,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Pelapor</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Kategori</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Prioritas</th>
+                                Bidang</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -146,172 +155,67 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($laporan ?? [] as $item)
+                        @forelse($laporans ?? [] as $laporan)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4">
                                     <div>
                                         <div class="text-sm font-medium text-gray-900">
-                                            {{ $item['judul'] ?? 'Jalan berlubang parah' }}</div>
+                                            {{ $laporan->judul }}</div>
                                         <div class="text-sm text-gray-500">
-                                            {{ Str::limit($item['lokasi'] ?? 'Jl. Merdeka No. 123', 40) }}</div>
+                                            {{ Str::limit($laporan->alamat, 40) }}</div>
+                                        @if ($laporan->foto)
+                                            <div class="mt-1">
+                                                <span class="text-xs text-blue-600">📷 Ada foto</span>
+                                            </div>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-900">{{ $item['pelapor'] ?? 'Ahmad Susanto' }}</div>
-                                    <div class="text-sm text-gray-500">{{ $item['kontak'] ?? '081234567890' }}</div>
+                                    <div class="text-sm text-gray-900">{{ $laporan->nama_pelapor }}</div>
+                                    <div class="text-sm text-gray-500">{{ $laporan->kontak_pelapor }}</div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
-                                        {{ ucfirst($item['kategori'] ?? 'jalan') }}
+                                    <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                        {{ $laporan->bidang->nama ?? 'Tidak ada bidang' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
                                     @php
-                                        $prioritas = $item['prioritas'] ?? 'sedang';
-                                        $prioritasColors = [
-                                            'tinggi' => 'bg-red-100 text-red-800',
-                                            'sedang' => 'bg-yellow-100 text-yellow-800',
-                                            'rendah' => 'bg-green-100 text-green-800',
+                                        $statusColors = [
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'diterima' => 'bg-blue-100 text-blue-800',
+                                            'ditolak' => 'bg-red-100 text-red-800',
+                                            'selesai' => 'bg-green-100 text-green-800',
+                                        ];
+                                        $statusText = [
+                                            'pending' => 'Menunggu Verifikasi',
+                                            'diterima' => 'Diterima',
+                                            'ditolak' => 'Ditolak',
+                                            'selesai' => 'Selesai',
                                         ];
                                     @endphp
                                     <span
-                                        class="px-2 py-1 text-xs font-medium rounded-full {{ $prioritasColors[$prioritas] }}">
-                                        {{ ucfirst($prioritas) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    @php
-                                        $status = $item['status'] ?? 'pending';
-                                        $statusColors = [
-                                            'pending' => 'bg-yellow-100 text-yellow-800',
-                                            'assigned' => 'bg-blue-100 text-blue-800',
-                                            'in_progress' => 'bg-purple-100 text-purple-800',
-                                            'completed' => 'bg-green-100 text-green-800',
-                                        ];
-                                    @endphp
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full {{ $statusColors[$status] }}">
-                                        {{ ucfirst($status) }}
+                                        class="px-2 py-1 text-xs font-medium rounded-full {{ $statusColors[$laporan->status_verifikasi] ?? 'bg-gray-100 text-gray-800' }}">
+                                        {{ $statusText[$laporan->status_verifikasi] ?? ucfirst($laporan->status_verifikasi) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">
-                                    {{ $item['created_at'] ?? '2 Jan 2024' }}
+                                    {{ $laporan->tanggal_laporan ? $laporan->tanggal_laporan->format('d M Y') : '-' }}
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-2">
-                                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                            Detail
-                                        </button>
-                                        @if ($status === 'pending')
-                                            <button
-                                                class="text-green-600 hover:text-green-800 text-sm font-medium assign-btn"
-                                                data-laporan-id="{{ $item['id'] ?? $loop->index }}">
-                                                Assign
-                                            </button>
-                                        @endif
+                                        <a href="{{ route('admin.laporan.show', $laporan->id) }}">
+                                            <p class="text-blue-600 hover:text-blue-800 text-sm font-medium">Detail</p>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
                         @empty
-                            <!-- Data dummy untuk contoh -->
-                            @for ($i = 1; $i <= 15; $i++)
-                                @php
-                                    $statuses = ['pending', 'assigned', 'in_progress', 'completed'];
-                                    $categories = ['jalan', 'drainase', 'jembatan', 'lampu_jalan', 'fasilitas_umum'];
-                                    $priorities = ['tinggi', 'sedang', 'rendah'];
-
-                                    $randomStatus = $statuses[array_rand($statuses)];
-                                    $randomCategory = $categories[array_rand($categories)];
-                                    $randomPriority = $priorities[array_rand($priorities)];
-
-                                    $statusColors = [
-                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                        'assigned' => 'bg-blue-100 text-blue-800',
-                                        'in_progress' => 'bg-purple-100 text-purple-800',
-                                        'completed' => 'bg-green-100 text-green-800',
-                                    ];
-
-                                    $prioritasColors = [
-                                        'tinggi' => 'bg-red-100 text-red-800',
-                                        'sedang' => 'bg-yellow-100 text-yellow-800',
-                                        'rendah' => 'bg-green-100 text-green-800',
-                                    ];
-
-                                    $titles = [
-                                        'Jalan berlubang parah',
-                                        'Drainase tersumbat',
-                                        'Lampu jalan mati',
-                                        'Jembatan retak',
-                                        'Fasilitas rusak',
-                                        'Trotoar rusak',
-                                        'Gorong-gorong bocor',
-                                    ];
-
-                                    $locations = [
-                                        'Jl. Merdeka No. 123',
-                                        'Jl. Sudirman Km. 5',
-                                        'Jl. Diponegoro 45',
-                                        'Jl. Ahmad Yani 78',
-                                        'Jl. Gatot Subroto 90',
-                                        'Jl. Veteran 12',
-                                    ];
-
-                                    $names = [
-                                        'Ahmad Susanto',
-                                        'Budi Prasetyo',
-                                        'Siti Nurhaliza',
-                                        'Eko Wijaya',
-                                        'Maya Sari',
-                                    ];
-                                @endphp
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4">
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-900">
-                                                {{ $titles[array_rand($titles)] }}</div>
-                                            <div class="text-sm text-gray-500">{{ $locations[array_rand($locations)] }}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900">{{ $names[array_rand($names)] }}</div>
-                                        <div class="text-sm text-gray-500">081234567{{ sprintf('%03d', $i) }}</div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
-                                            {{ ucfirst($randomCategory) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="px-2 py-1 text-xs font-medium rounded-full {{ $prioritasColors[$randomPriority] }}">
-                                            {{ ucfirst($randomPriority) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="px-2 py-1 text-xs font-medium rounded-full {{ $statusColors[$randomStatus] }}">
-                                            {{ ucfirst($randomStatus) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
-                                        {{ date('d M Y', strtotime("-{$i} days")) }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex space-x-2">
-                                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                                Detail
-                                            </button>
-                                            @if ($randomStatus === 'pending')
-                                                <button
-                                                    class="text-green-600 hover:text-green-800 text-sm font-medium assign-btn"
-                                                    data-laporan-id="{{ $i }}">
-                                                    Assign
-                                                </button>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endfor
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                                    Belum ada laporan.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -319,72 +223,140 @@
         </div>
 
         <!-- Pagination -->
-        <div class="mt-6 flex justify-between items-center">
-            <div class="text-sm text-gray-500">
-                Menampilkan 1-15 dari {{ $total_laporan ?? '208' }} laporan
+        @if (method_exists($laporans, 'links'))
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    Menampilkan {{ $laporans->firstItem() ?? 0 }}-{{ $laporans->lastItem() ?? 0 }} dari
+                    {{ $laporans->total() ?? 0 }} laporan
+                </div>
+                {{ $laporans->links() }}
             </div>
-            <nav class="flex items-center space-x-2">
-                <button class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50" disabled>
-                    ← Sebelumnya
-                </button>
-                <button class="px-3 py-2 text-sm bg-blue-600 text-white rounded">1</button>
-                <button class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">2</button>
-                <button class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">3</button>
-                <button class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">
-                    Selanjutnya →
-                </button>
-            </nav>
-        </div>
+        @else
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    Menampilkan {{ $laporans->count() }} laporan
+                </div>
+                <nav class="flex items-center space-x-2">
+                    <span class="px-3 py-2 text-sm bg-blue-600 text-white rounded">1</span>
+                </nav>
+            </div>
+        @endif
     </div>
 
     <!-- Modal Assign Tim -->
-    <div id="modalAssignTim" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div id="modalAssignTim" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0, 0, 0, 0.1);"></div>
+
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Assign Laporan ke Tim</h3>
-                    <form>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Assign Laporan ke Tim</h3>
+                        <button id="btnCloseModalAssign"
+                            class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form id="formAssignTim">
+                        @csrf
+                        <input type="hidden" id="laporanIdAssign">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Tim</label>
-                                <select
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <select id="timId" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200">
                                     <option value="">Pilih Tim</option>
-                                    <option value="tim_rutin_1">Tim Pemeliharaan 1</option>
-                                    <option value="tim_rutin_2">Tim Pemeliharaan 2</option>
-                                    <option value="tim_non_rutin_1">Tim Proyek Jembatan</option>
-                                    <option value="tim_non_rutin_2">Tim Emergency Response</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Prioritas</label>
-                                <select
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                                    <option value="tinggi">Tinggi</option>
-                                    <option value="sedang" selected>Sedang</option>
-                                    <option value="rendah">Rendah</option>
+                                    @foreach ($tims ?? [] as $tim)
+                                        <option value="{{ $tim->id }}">{{ $tim->nama }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Target Selesai</label>
-                                <input type="date"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <input type="date" id="targetSelesai" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
-                                <textarea rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                <textarea id="catatanAssign" rows="3"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                     placeholder="Catatan khusus untuk tim"></textarea>
                             </div>
                         </div>
                         <div class="mt-6 flex justify-end space-x-3">
                             <button type="button" id="btnBatalAssign"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200 transform hover:scale-105">
                                 Assign Tim
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Verifikasi Laporan -->
+    <div id="modalVerifikasi" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0, 0, 0, 0.1);"></div>
+
+        <!-- Modal Container -->
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Verifikasi Laporan</h3>
+                        <button id="btnCloseModalVerifikasi"
+                            class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form id="formVerifikasi">
+                        @csrf
+                        <input type="hidden" id="laporanIdVerifikasi">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status Verifikasi</label>
+                                <select id="statusVerifikasi" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200">
+                                    <option value="">Pilih Status</option>
+                                    <option value="diterima">Diterima</option>
+                                    <option value="ditolak">Ditolak</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Verifikasi</label>
+                                <textarea id="catatanVerifikasi" rows="3"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
+                                    placeholder="Berikan catatan untuk keputusan verifikasi ini"></textarea>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button type="button" id="btnBatalVerifikasi"
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200 transform hover:scale-105">
+                                Simpan Verifikasi
                             </button>
                         </div>
                     </form>
@@ -396,23 +368,230 @@
 
 @push('scripts')
     <script>
-        // Assign modal handlers
-        document.querySelectorAll('.assign-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const laporanId = this.dataset.laporanId;
-                document.getElementById('modalAssignTim').classList.remove('hidden');
-            });
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal Animation Functions (consistent with team modals)
+            function showModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
 
-        document.getElementById('btnBatalAssign').addEventListener('click', function() {
-            document.getElementById('modalAssignTim').classList.add('hidden');
-        });
+                modal.classList.remove('hidden');
 
-        // Close modal when clicking outside
-        document.addEventListener('click', function(e) {
-            if (e.target.id === 'modalAssignTim') {
-                document.getElementById('modalAssignTim').classList.add('hidden');
+                // Force reflow
+                modal.offsetHeight;
+
+                // Animate in
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+
+                content.classList.remove('opacity-0', 'scale-95');
+                content.classList.add('opacity-100', 'scale-100');
             }
+
+            function hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
+
+                // Animate out
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+
+                content.classList.remove('opacity-100', 'scale-100');
+                content.classList.add('opacity-0', 'scale-95');
+
+                // Hide after animation
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    // Reset forms when closing modals
+                    const form = modal.querySelector('form');
+                    if (form) form.reset();
+                }, 300);
+            }
+
+            // Make functions globally available
+            window.showModal = showModal;
+            window.closeModal = hideModal;
+
+            // Detail modal
+            window.showDetailModal = async function(laporanId) {
+                try {
+                    const response = await fetch(`/ketua/laporan/${laporanId}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        document.getElementById('detailContent').innerHTML = `
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Judul</label>
+                            <p class="text-sm text-gray-900">${data.laporan.judul}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                            <p class="text-sm text-gray-900">${data.laporan.deskripsi || '-'}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Alamat</label>
+                            <p class="text-sm text-gray-900">${data.laporan.alamat}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Pelapor</label>
+                            <p class="text-sm text-gray-900">${data.laporan.nama_pelapor} (${data.laporan.kontak_pelapor})</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Bidang</label>
+                            <p class="text-sm text-gray-900">${data.laporan.bidang ? data.laporan.bidang.nama : 'Tidak ada bidang'}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <p class="text-sm text-gray-900">${data.laporan.status_verifikasi}</p>
+                        </div>
+                        ${data.laporan.foto ? `
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700">Foto</label>
+                                                    <img src="/storage/${data.laporan.foto}" alt="Foto Laporan" class="mt-2 max-w-full h-64 object-cover rounded-lg">
+                                                </div>
+                                                ` : ''}
+                    </div>
+                `;
+                        showModal('modalDetail');
+                    } else {
+                        alert('Gagal memuat detail laporan');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memuat detail');
+                }
+            }
+
+            // Assign modal
+            window.showAssignModal = function(laporanId) {
+                document.getElementById('laporanIdAssign').value = laporanId;
+                // Set minimum date to today
+                document.getElementById('targetSelesai').min = new Date().toISOString().split('T')[0];
+                showModal('modalAssignTim');
+            }
+
+            // Verify modal
+            window.showVerifyModal = function(laporanId) {
+                document.getElementById('laporanIdVerifikasi').value = laporanId;
+                showModal('modalVerifikasi');
+            }
+
+            // Modal close handlers for new buttons
+            document.getElementById('btnCloseModalAssign').addEventListener('click', function() {
+                hideModal('modalAssignTim');
+            });
+
+            document.getElementById('btnBatalAssign').addEventListener('click', function() {
+                hideModal('modalAssignTim');
+            });
+
+            document.getElementById('btnCloseModalVerifikasi').addEventListener('click', function() {
+                hideModal('modalVerifikasi');
+            });
+
+            document.getElementById('btnBatalVerifikasi').addEventListener('click', function() {
+                hideModal('modalVerifikasi');
+            });
+
+            // Form submissions
+            document.getElementById('formAssignTim').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const laporanId = document.getElementById('laporanIdAssign').value;
+                const timId = document.getElementById('timId').value;
+                const targetSelesai = document.getElementById('targetSelesai').value;
+                const catatan = document.getElementById('catatanAssign').value;
+
+                try {
+                    const response = await fetch(`/ketua/laporan/${laporanId}/assign`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            tim_id: timId,
+                            target_selesai: targetSelesai,
+                            catatan: catatan
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Laporan berhasil ditugaskan ke tim');
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Terjadi kesalahan saat menugaskan laporan');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menugaskan laporan');
+                }
+            });
+
+            document.getElementById('formVerifikasi').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const laporanId = document.getElementById('laporanIdVerifikasi').value;
+                const status = document.getElementById('statusVerifikasi').value;
+                const catatan = document.getElementById('catatanVerifikasi').value;
+
+                try {
+                    const response = await fetch(`/ketua/laporan/${laporanId}/verify`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            status_verifikasi: status,
+                            catatan_verifikasi: catatan
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(`Laporan berhasil ${status}`);
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Terjadi kesalahan saat memverifikasi laporan');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memverifikasi laporan');
+                }
+            });
+
+            // Close modals when clicking on backdrop
+            document.addEventListener('click', function(e) {
+                const modals = ['modalDetail', 'modalAssignTim', 'modalVerifikasi'];
+                modals.forEach(modalId => {
+                    if (e.target.classList.contains('modal-backdrop')) {
+                        hideModal(modalId);
+                    }
+                });
+            });
+
+            // ESC key to close modals
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideModal('modalDetail');
+                    hideModal('modalAssignTim');
+                    hideModal('modalVerifikasi');
+                }
+            });
         });
     </script>
 @endpush

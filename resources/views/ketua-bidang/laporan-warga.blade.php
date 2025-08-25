@@ -82,7 +82,41 @@
         <!-- Filter Section -->
         <div class="bg-white rounded-lg shadow border border-gray-200 p-4 mb-6">
             <form method="GET" action="">
-                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">                    
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    <div class="flex flex-wrap gap-3">
+                        <select name="status_verifikasi"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Semua Status</option>
+                            <option value="pending" {{ request('status_verifikasi') == 'pending' ? 'selected' : '' }}>
+                                Menunggu Verifikasi</option>
+                            <option value="diterima" {{ request('status_verifikasi') == 'diterima' ? 'selected' : '' }}>
+                                Diterima</option>
+                            <option value="ditolak" {{ request('status_verifikasi') == 'ditolak' ? 'selected' : '' }}>
+                                Ditolak</option>
+                            <option value="selesai" {{ request('status_verifikasi') == 'selesai' ? 'selected' : '' }}>
+                                Selesai</option>
+                        </select>
+                        <select name="bidang_id"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Semua Bidang</option>
+                            @foreach ($bidangs ?? [] as $bidang)
+                                <option value="{{ $bidang->id }}"
+                                    {{ request('bidang_id') == $bidang->id ? 'selected' : '' }}>
+                                    {{ $bidang->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <select name="sort_by"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Urutkan</option>
+                            <option value="tanggal_terbaru"
+                                {{ request('sort_by') == 'tanggal_terbaru' ? 'selected' : '' }}>Tanggal Terbaru</option>
+                            <option value="tanggal_terlama"
+                                {{ request('sort_by') == 'tanggal_terlama' ? 'selected' : '' }}>Tanggal Terlama</option>
+                            <option value="nama_az" {{ request('sort_by') == 'nama_az' ? 'selected' : '' }}>Nama A-Z
+                            </option>
+                        </select>
+                    </div>
                     <div class="flex items-center space-x-3">
                         <input type="text" name="search" value="{{ request('search') }}"
                             placeholder="Cari judul laporan..."
@@ -170,10 +204,11 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('ketua.detail-laporan.single.show', $laporan->id) }}"
-                                            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium detail-btn"
+                                            data-laporan-id="{{ $laporan->id }}"
+                                            onclick="showDetailModal({{ $laporan->id }})">
                                             Detail
-                                        </a>
+                                        </button>
                                         @if ($laporan->status_verifikasi === 'diterima' && !$laporan->timNonRutin)
                                             <button
                                                 class="text-green-600 hover:text-green-800 text-sm font-medium assign-btn"
@@ -206,13 +241,24 @@
         </div>
 
         <!-- Pagination -->
-        <div class="mt-6 flex justify-between items-center">
-            <div class="text-sm text-gray-500">
-                Menampilkan {{ $laporans->firstItem() ?? 0 }}-{{ $laporans->lastItem() ?? 0 }} dari
-                {{ $laporans->total() ?? 0 }} laporan
+        @if (method_exists($laporans, 'links'))
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    Menampilkan {{ $laporans->firstItem() ?? 0 }}-{{ $laporans->lastItem() ?? 0 }} dari
+                    {{ $laporans->total() ?? 0 }} laporan
+                </div>
+                {{ $laporans->links() }}
             </div>
-            {{ $laporans->links() }}
-        </div>
+        @else
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    Menampilkan {{ $laporans->count() }} laporan
+                </div>
+                <nav class="flex items-center space-x-2">
+                    <span class="px-3 py-2 text-sm bg-blue-600 text-white rounded">1</span>
+                </nav>
+            </div>
+        @endif
     </div>
 
     <!-- Modal Detail Laporan -->
@@ -238,11 +284,27 @@
     </div>
 
     <!-- Modal Assign Tim -->
-    <div id="modalAssignTim" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div id="modalAssignTim" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0, 0, 0, 0.1);"></div>
+
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Assign Laporan ke Tim</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Assign Laporan ke Tim</h3>
+                        <button id="btnCloseModalAssign"
+                            class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
                     <form id="formAssignTim">
                         @csrf
                         <input type="hidden" id="laporanIdAssign">
@@ -250,7 +312,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Tim</label>
                                 <select id="timId" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200">
                                     <option value="">Pilih Tim</option>
                                     @foreach ($tims ?? [] as $tim)
                                         <option value="{{ $tim->id }}">{{ $tim->nama }}</option>
@@ -260,22 +322,22 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Target Selesai</label>
                                 <input type="date" id="targetSelesai" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
                                 <textarea id="catatanAssign" rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                     placeholder="Catatan khusus untuk tim"></textarea>
                             </div>
                         </div>
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button type="button" onclick="closeModal('modalAssignTim')"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                            <button type="button" id="btnBatalAssign"
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200 transform hover:scale-105">
                                 Assign Tim
                             </button>
                         </div>
@@ -286,11 +348,27 @@
     </div>
 
     <!-- Modal Verifikasi Laporan -->
-    <div id="modalVerifikasi" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div id="modalVerifikasi" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0, 0, 0, 0.1);"></div>
+
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Verifikasi Laporan</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Verifikasi Laporan</h3>
+                        <button id="btnCloseModalVerifikasi"
+                            class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
                     <form id="formVerifikasi">
                         @csrf
                         <input type="hidden" id="laporanIdVerifikasi">
@@ -298,7 +376,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Status Verifikasi</label>
                                 <select id="statusVerifikasi" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200">
                                     <option value="">Pilih Status</option>
                                     <option value="diterima">Diterima</option>
                                     <option value="ditolak">Ditolak</option>
@@ -307,17 +385,17 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Verifikasi</label>
                                 <textarea id="catatanVerifikasi" rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                     placeholder="Berikan catatan untuk keputusan verifikasi ini"></textarea>
                             </div>
                         </div>
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button type="button" onclick="closeModal('modalVerifikasi')"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                            <button type="button" id="btnBatalVerifikasi"
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200 transform hover:scale-105">
                                 Simpan Verifikasi
                             </button>
                         </div>
@@ -331,17 +409,49 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Generic modal functions
-            window.showModal = function(modalId) {
-                document.getElementById(modalId).classList.remove('hidden');
+            // Modal Animation Functions (consistent with team modals)
+            function showModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
+
+                modal.classList.remove('hidden');
+
+                // Force reflow
+                modal.offsetHeight;
+
+                // Animate in
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+
+                content.classList.remove('opacity-0', 'scale-95');
+                content.classList.add('opacity-100', 'scale-100');
             }
 
-            window.closeModal = function(modalId) {
-                document.getElementById(modalId).classList.add('hidden');
-                // Reset forms when closing modals
-                const form = document.querySelector(`#${modalId} form`);
-                if (form) form.reset();
+            function hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
+
+                // Animate out
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+
+                content.classList.remove('opacity-100', 'scale-100');
+                content.classList.add('opacity-0', 'scale-95');
+
+                // Hide after animation
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    // Reset forms when closing modals
+                    const form = modal.querySelector('form');
+                    if (form) form.reset();
+                }, 300);
             }
+
+            // Make functions globally available
+            window.showModal = showModal;
+            window.closeModal = hideModal;
 
             // Detail modal
             window.showDetailModal = async function(laporanId) {
@@ -413,6 +523,23 @@
                 document.getElementById('laporanIdVerifikasi').value = laporanId;
                 showModal('modalVerifikasi');
             }
+
+            // Modal close handlers for new buttons
+            document.getElementById('btnCloseModalAssign').addEventListener('click', function() {
+                hideModal('modalAssignTim');
+            });
+
+            document.getElementById('btnBatalAssign').addEventListener('click', function() {
+                hideModal('modalAssignTim');
+            });
+
+            document.getElementById('btnCloseModalVerifikasi').addEventListener('click', function() {
+                hideModal('modalVerifikasi');
+            });
+
+            document.getElementById('btnBatalVerifikasi').addEventListener('click', function() {
+                hideModal('modalVerifikasi');
+            });
 
             // Form submissions
             document.getElementById('formAssignTim').addEventListener('submit', async function(e) {
@@ -487,14 +614,23 @@
                 }
             });
 
-            // Close modals when clicking outside
+            // Close modals when clicking on backdrop
             document.addEventListener('click', function(e) {
                 const modals = ['modalDetail', 'modalAssignTim', 'modalVerifikasi'];
                 modals.forEach(modalId => {
-                    if (e.target.id === modalId) {
-                        closeModal(modalId);
+                    if (e.target.classList.contains('modal-backdrop')) {
+                        hideModal(modalId);
                     }
                 });
+            });
+
+            // ESC key to close modals
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideModal('modalDetail');
+                    hideModal('modalAssignTim');
+                    hideModal('modalVerifikasi');
+                }
             });
         });
     </script>

@@ -35,6 +35,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/bidang', [AdminController::class, 'bidang'])->name('admin.bidang');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
+    Route::get('/laporan/{id}/detail', [AdminController::class, 'detailLaporan'])->name('admin.laporan.show');
 });
 
 // Ketua Bidang Routes  
@@ -46,6 +47,7 @@ Route::prefix('ketua')->middleware(['auth', 'role:ketua_bidang'])->group(functio
     Route::delete('/timnonrutin/{id}', [KetuaBidangController::class, 'timNonRutinDestroy'])->name('ketua.nonrutin.destroy');
     Route::get('/timrutin/{id}/detail', [KetuaBidangController::class, 'timRutinShow'])->name('ketua.rutin.show');
     Route::post('/timrutin/{id}/tambah-anggota', [KetuaBidangController::class, 'storeAnggotaRutin'])->name('ketua.anggota.store');
+    Route::post('/timnonrutin/{id}/tambah-anggota', [KetuaBidangController::class, 'storeAnggotaNonRutin'])->name('ketua.nonanggota.store');
     Route::get('/timnonrutin/{id}/detail', [KetuaBidangController::class, 'timNonRutinShow'])->name('ketua.nonrutin.show');
     Route::get('/timnonrutin/{id}/detail-laporan', [KetuaBidangController::class, 'detailLaporan'])->name('ketua.detail-laporan.show');
     Route::get('/laporan/{id}/detail-laporan', [KetuaBidangController::class, 'detailLaporan'])->name('ketua.detail-laporan.single.show');
@@ -59,7 +61,10 @@ Route::prefix('ketua')->middleware(['auth', 'role:ketua_bidang'])->group(functio
 Route::prefix('pegawai')->middleware(['auth', 'role:pegawai'])->group(function () {
     Route::get('/dashboard', [PegawaiController::class, 'index'])->name('pegawai.dashboard');
     Route::get('/tim', [PegawaiController::class, 'tim'])->name('pegawai.tim');
+    Route::get('/timrutin/{id}/detail', [PegawaiController::class, 'timRutinShow'])->name('pegawai.rutin.show');
+    Route::get('/timnonrutin/{id}/detail', [PegawaiController::class, 'timNonRutinShow'])->name('pegawai.nonrutin.show');
     Route::get('/laporan', [PegawaiController::class, 'laporan'])->name('pegawai.laporan');
+    Route::get('/laporan/{id}/detail', [PegawaiController::class, 'detailLaporan'])->name('pegawai.laporan.show');
 });
 
 Route::post('/logout', [SesiController::class, 'logout'])->name('logout');

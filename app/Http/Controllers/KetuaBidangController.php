@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Laporan;
 use App\Models\TimNonRutin;
+use App\Models\TimNonRutinUsers;
 use App\Models\TimRutin;
 use App\Models\TimRutinUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KetuaBidangController extends Controller
 {
@@ -80,7 +82,14 @@ class KetuaBidangController extends Controller
     public function timRutinShow($id)
     {
         $timRutin = TimRutin::find($id);
-        $users = User::where('bidang_id', Auth::user()->bidang_id)->get();
+        $query = User::where('bidang_id', Auth::user()->bidang_id);
+        $query->where('id', '!=', $timRutin->penanggung_jawab_id);
+        $anggotaNonRutin = DB::table('tim_non_rutin_user')->pluck('user_id');
+        $anggotaRutin = DB::table('tim_rutin_user')->pluck('user_id');
+        $users = $query->whereNotIn('id', $anggotaNonRutin)
+            ->whereNotIn('id', $anggotaRutin)
+            ->orderBy('name')
+            ->get();
         $timRutinAnggota = TimRutin::with(['anggota', 'penanggungJawab'])->findOrFail($id);
         $anggotaTim = User::orderBy('name')->get();
         return view('ketua-bidang.detail.tim-rutin', compact('timRutin', 'users', 'anggotaTim', 'timRutinAnggota'));
@@ -88,7 +97,14 @@ class KetuaBidangController extends Controller
     public function timNonRutinShow($id)
     {
         $timNonRutin = TimNonRutin::find($id);
-        $users = User::where('bidang_id', Auth::user()->bidang_id)->get();
+        $query = User::where('bidang_id', Auth::user()->bidang_id);
+        $query->where('id', '!=', $timNonRutin->penanggung_jawab_id);
+        $anggotaNonRutin = DB::table('tim_non_rutin_user')->pluck('user_id');
+        $anggotaRutin = DB::table('tim_rutin_user')->pluck('user_id');
+        $users = $query->whereNotIn('id', $anggotaNonRutin)
+            ->whereNotIn('id', $anggotaRutin)
+            ->orderBy('name')
+            ->get();
         $timNonRutinAnggota = TimNonRutin::with(['anggota', 'penanggungJawab'])->findOrFail($id);
         $anggotaTim = User::orderBy('name')->get();
         return view('ketua-bidang.detail.tim-nonrutin', compact('timNonRutin', 'users', 'anggotaTim', 'timNonRutinAnggota'));
@@ -166,6 +182,24 @@ class KetuaBidangController extends Controller
 
         return redirect()
             ->route('ketua.rutin.show', [$timId])
+            ->with('success', 'Anggota berhasil ditambahkan');
+    }
+
+    public function storeAnggotaNonRutin(Request $request, $timId)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ], [
+            'user_id.required' => 'Silahkan Pilih Pegawai yang ingin ditambahkan'
+        ]);
+
+        TimNonRutinUsers::create([
+            'user_id' => $request->user_id,
+            'tim_non_rutin_id' => $timId
+        ]);
+
+        return redirect()
+            ->route('ketua.nonrutin.show', [$timId])
             ->with('success', 'Anggota berhasil ditambahkan');
     }
 }
