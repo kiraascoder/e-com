@@ -20,11 +20,17 @@ class TimRutin extends Model
 
     public function anggota()
     {
-        return $this->belongsToMany(User::class, 'tim_rutin_user');
+        return $this->belongsToMany(User::class, 'tim_rutin_user', 'tim_rutin_id', 'user_id')
+            ->withTimestamps();
     }
 
     public function laporanRutin()
     {
         return $this->hasMany(LaporanRutin::class);
+    }
+
+    public function anggotaRutin()
+    {
+        return $this->hasMany(TimRutinUsers::class);
     }
 }

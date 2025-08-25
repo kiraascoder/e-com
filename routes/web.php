@@ -42,11 +42,15 @@ Route::prefix('ketua')->middleware(['auth', 'role:ketua_bidang'])->group(functio
     Route::get('/dashboard', [KetuaBidangController::class, 'index'])->name('ketua.dashboard');
     Route::get('/tim', [KetuaBidangController::class, 'tim'])->name('ketua.tim');
     Route::post('/timrutin-store', [KetuaBidangController::class, 'timRutinStore'])->name('ketua.rutin.store');
-    Route::delete('/timrutin/{id}', [KetuaBidangController::class, 'timRutinDestroy'])->name('ketua.rutin.destroy');    
-    Route::get('/timrutin/{id}/detail', [KetuaBidangController::class, 'timRutinShow'])->name('ketua.rutin.show');    
+    Route::delete('/timrutin/{id}', [KetuaBidangController::class, 'timRutinDestroy'])->name('ketua.rutin.destroy');
+    Route::delete('/timnonrutin/{id}', [KetuaBidangController::class, 'timNonRutinDestroy'])->name('ketua.nonrutin.destroy');
+    Route::get('/timrutin/{id}/detail', [KetuaBidangController::class, 'timRutinShow'])->name('ketua.rutin.show');
+    Route::post('/timrutin/{id}/tambah-anggota', [KetuaBidangController::class, 'storeAnggotaRutin'])->name('ketua.anggota.store');
+    Route::get('/timnonrutin/{id}/detail', [KetuaBidangController::class, 'timNonRutinShow'])->name('ketua.nonrutin.show');
+    Route::get('/timnonrutin/{id}/detail-laporan', [KetuaBidangController::class, 'detailLaporan'])->name('ketua.detail-laporan.show');
+    Route::get('/laporan/{id}/detail-laporan', [KetuaBidangController::class, 'detailLaporan'])->name('ketua.detail-laporan.single.show');
     Route::post('/timnonrutin-store', [KetuaBidangController::class, 'timNonRutinStore'])->name('ketua.nonrutin.store');
     Route::get('/tim/{id}', [KetuaBidangController::class, 'detailTim'])->name('ketua.tim.show');
-
     Route::get('/daftar-laporan', [KetuaBidangController::class, 'laporan'])->name('ketua.laporan');
     Route::get('/review-laporan', [KetuaBidangController::class, 'review'])->name('ketua.review');
 });

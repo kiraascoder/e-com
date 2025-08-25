@@ -63,9 +63,12 @@ return new class extends Migration {
         Schema::create('tim_non_rutins', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('laporan_id');
+            $table->unsignedBigInteger('bidang_id');
             $table->string('nama_tim')->nullable();
             $table->unsignedBigInteger('penanggung_jawab_id');
+            $table->string('deskripsi')->nullable();
             $table->timestamps();
+            $table->foreign('bidang_id')->references('id')->on('bidangs')->cascadeOnDelete();
             $table->foreign('laporan_id')->references('id')->on('laporans')->cascadeOnDelete();
             $table->foreign('penanggung_jawab_id')->references('id')->on('users')->cascadeOnDelete();
         });

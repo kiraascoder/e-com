@@ -60,10 +60,8 @@
                     <form action="{{ route('warga.profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-
                         <div class="p-6">
                             <h3 class="text-lg font-medium text-gray-900 mb-6">Informasi Pribadi</h3>
-
                             <!-- Nama Lengkap -->
                             <div class="mb-6">
                                 <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">Nama

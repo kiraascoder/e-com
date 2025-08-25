@@ -19,6 +19,10 @@ class Laporan extends Model
         'pelapor_id',
     ];
 
+    protected $casts = [
+        'tanggal_laporan' => 'datetime',
+    ];
+
     public function bidang()
     {
         return $this->belongsTo(Bidang::class);
