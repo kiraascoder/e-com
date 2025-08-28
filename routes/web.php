@@ -25,6 +25,7 @@ Route::prefix('warga')->middleware('role:warga')->group(function () {
     Route::put('edit-profile/update', [WargaController::class, 'profileUpdate'])->name('warga.profile.update');
     Route::get('laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
     Route::get('laporan/{id}/detail', [WargaController::class, 'detailLaporan'])->name('warga.laporan.show');
+    Route::delete('laporan/{id}/delete', [WargaController::class, 'destroyLaporan'])->name('warga.laporan.destroy');
     Route::get('buat-laporan', [WargaController::class, 'buatLaporan'])->name('warga.buat.laporan');
     Route::post('store-laporan', [WargaController::class, 'storeLaporan'])->name('warga.laporan.store');
 });
@@ -33,7 +34,13 @@ Route::prefix('warga')->middleware('role:warga')->group(function () {
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/bidang', [AdminController::class, 'bidang'])->name('admin.bidang');
+    Route::post('/bidang/store', [AdminController::class, 'storeBidang'])->name('admin.bidang.store');
+    Route::get('/bidang/{id}/detail', [AdminController::class, 'showBidang'])->name('admin.bidang.show');
+    Route::delete('/bidang/{id}/delete', [AdminController::class, 'destroyBidang'])->name('admin.bidang.delete');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::post('/users/store', [AdminController::class, 'storeUser'])->name('admin.users.store');
+    Route::get('/users/{id}/detail', [AdminController::class, 'detailUser'])->name('admin.users.detail');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
     Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
     Route::get('/laporan/{id}/detail', [AdminController::class, 'detailLaporan'])->name('admin.laporan.show');
 });

@@ -6,6 +6,17 @@
     <!-- Header Section -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            @if (session('success'))
+                <div class="mb-4 rounded-lg bg-green-100 border border-green-300 text-green-800 px-4 py-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-4 rounded-lg bg-red-100 border border-red-300 text-red-800 px-4 py-3">
+                    {{ $errors->first() }}
+                </div>
+            @endif
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold">Kelola User</h1>
@@ -34,9 +45,10 @@
                 <select id="filterRole"
                     class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Semua Role</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Supervisor">Supervisor</option>
-                    <option value="Teknisi">Teknisi</option>
+                    <option value="admin">Admin</option>
+                    <option value="ketua_bidang">Ketua Bidang</option>
+                    <option value="pegawai">Pegawai</option>
+                    <option value="warga">Warga</option>
                 </select>
             </div>
         </div>
@@ -51,10 +63,6 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Terakhir
-                            Login</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
@@ -83,27 +91,16 @@
                                     {{ $role }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                {{ $user->is_active ?? true ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ $user->is_active ?? true ? 'Aktif' : 'Nonaktif' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                {{ optional($user->last_login_at)->format('d M Y H:i') ?? '—' }}
-                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <button class="btnEdit text-blue-600 hover:text-blue-900" title="Edit"
-                                        data-id="{{ $user->id }}" data-nama="{{ $user->name }}"
-                                        data-email="{{ $user->email }}" data-role="{{ $user->role }}">
-                                        <!-- ikon edit -->
+                                    <a href="{{ route('admin.users.detail', $user->id) }}"
+                                        class="text-blue-600 hover:text-blue-900" title="Detail">
+                                        <!-- ikon detail -->
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                    </button>
+                                    </a>
                                     <button class="btnHapus text-red-600 hover:text-red-900" title="Hapus"
                                         data-id="{{ $user->id }}" data-nama="{{ $user->name }}">
                                         <!-- ikon hapus -->
@@ -117,7 +114,6 @@
                         </tr>
                     @endforeach
                 </tbody>
-p
             </table>
         </div>
 
@@ -141,48 +137,87 @@ p
     </div>
 
     <!-- Modal Form Tambah User -->
-    <div id="modalTambahUser" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <!-- Modal Form Tambah User -->
+    <div id="modalTambahUser" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0,0,0,0.1);"></div>
+
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah User Baru</h3>
-                    <form>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Tambah User Baru</h3>
+                        <button id="btnCloseModalTambah" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form method="POST" action="{{ route('admin.users.store') }}">
+                        @csrf
+                        <input type="hidden" name="form_type" value="user_create">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                                <input type="text" id="tambahNama"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                <input type="text" name="name" value="{{ old('name') }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') border-red-300 @enderror"
                                     placeholder="Masukkan nama lengkap">
+                                @error('name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" id="tambahEmail"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                <input type="email" name="email" value="{{ old('email') }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-300 @enderror"
                                     placeholder="user@example.com">
+                                @error('email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                                <input type="password" id="tambahPassword"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Masukkan password">
+                                <input type="password" name="password"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') border-red-300 @enderror"
+                                    placeholder="Minimal 6 karakter">
+                                @error('password')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                                <select id="tambahRole"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select name="role"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('role') border-red-300 @enderror">
                                     <option value="">Pilih Role</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Supervisor">Supervisor</option>
-                                    <option value="Teknisi">Teknisi</option>
+                                    <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="Ketua Bidang" {{ old('role') == 'Ketua Bidang' ? 'selected' : '' }}>
+                                        Ketua
+                                        Bidang</option>
+                                    <option value="Pegawai" {{ old('role') == 'Pegawai' ? 'selected' : '' }}>Pegawai
+                                    </option>
+                                    <option value="Warga" {{ old('role') == 'Warga' ? 'selected' : '' }}>Warga</option>
                                 </select>
+                                @error('role')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
+
                         <div class="mt-6 flex justify-end space-x-3">
                             <button type="button" id="btnBatalTambah"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 transform hover:scale-105">
                                 Simpan
                             </button>
                         </div>
@@ -193,49 +228,86 @@ p
     </div>
 
     <!-- Modal Form Edit User -->
-    <div id="modalEditUser" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <!-- Modal Form Edit User -->
+    <div id="modalEditUser" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0,0,0,0.1);"></div>
+
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Edit User</h3>
-                    <form>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Edit User</h3>
+                        <button id="btnCloseModalEdit" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form id="formEditUser" method="POST" action="#">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="form_type" value="user_edit">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                                <input type="text" id="editNama"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                <input type="text" name="name" id="editNama"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') border-red-300 @enderror"
                                     placeholder="Masukkan nama lengkap">
+                                @error('name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" id="editEmail"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                <input type="email" name="email" id="editEmail"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-300 @enderror"
                                     placeholder="user@example.com">
+                                @error('email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru (kosongkan jika
-                                    tidak ingin mengubah)</label>
-                                <input type="password" id="editPassword"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Masukkan password baru (opsional)">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru
+                                    (opsional)</label>
+                                <input type="password" name="password" id="editPassword"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') border-red-300 @enderror"
+                                    placeholder="Kosongkan jika tidak diubah">
+                                @error('password')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                                <select id="editRole"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select name="role" id="editRole"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('role') border-red-300 @enderror">
                                     <option value="">Pilih Role</option>
                                     <option value="Admin">Admin</option>
-                                    <option value="Supervisor">Supervisor</option>
-                                    <option value="Teknisi">Teknisi</option>
+                                    <option value="Ketua Bidang">Ketua Bidang</option>
+                                    <option value="Pegawai">Pegawai</option>
+                                    <option value="Warga">Warga</option>
                                 </select>
+                                @error('role')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
+
                         <div class="mt-6 flex justify-end space-x-3">
                             <button type="button" id="btnBatalEdit"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 transform hover:scale-105">
                                 Update
                             </button>
                         </div>
@@ -245,14 +317,19 @@ p
         </div>
     </div>
 
+
     <!-- Modal Konfirmasi Hapus -->
-    <div id="modalKonfirmasiHapus" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <!-- Modal Konfirmasi Hapus -->
+    <div id="modalKonfirmasiHapus" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0,0,0,0.1);"></div>
+
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-sm w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-sm w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
                     <div class="flex items-center mb-4">
-                        <div
-                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
                             <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 19c-.77.833.192 2.5 1.732 2.5z" />
@@ -266,25 +343,102 @@ p
                             Tindakan ini tidak dapat dibatalkan.
                         </p>
                     </div>
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" id="btnBatalHapus"
-                            class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
-                            Batal
-                        </button>
-                        <button type="button" id="btnKonfirmasiHapus"
-                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                            Hapus
-                        </button>
-                    </div>
+                    <form id="formHapusUser" method="POST" action="{{ route('admin.users.destroy', $user->id) }}">
+                        @csrf
+                        @method('DELETE')
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" id="btnBatalHapus"
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">Batal</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Hapus</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
+
 @endsection
 
 @push('scripts')
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Anim helpers
+            function showModal(id) {
+                const m = document.getElementById(id);
+                const b = m.querySelector('.modal-backdrop');
+                const c = m.querySelector('.modal-content');
+                m.classList.remove('hidden');
+                m.offsetHeight;
+                b.classList.remove('opacity-0');
+                b.classList.add('opacity-100');
+                c.classList.remove('opacity-0', 'scale-95');
+                c.classList.add('opacity-100', 'scale-100');
+            }
+
+            function hideModal(id) {
+                const m = document.getElementById(id);
+                const b = m.querySelector('.modal-backdrop');
+                const c = m.querySelector('.modal-content');
+                b.classList.remove('opacity-100');
+                b.classList.add('opacity-0');
+                c.classList.remove('opacity-100', 'scale-100');
+                c.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => m.classList.add('hidden'), 300);
+            }
+
+            // Tambah
+            document.getElementById('btnTambahUser')?.addEventListener('click', () => showModal('modalTambahUser'));
+            document.getElementById('btnCloseModalTambah')?.addEventListener('click', () => hideModal(
+                'modalTambahUser'));
+            document.getElementById('btnBatalTambah')?.addEventListener('click', () => hideModal(
+                'modalTambahUser'));
+
+            document.getElementById('btnCloseModalEdit')?.addEventListener('click', () => hideModal(
+                'modalEditUser'));
+            document.getElementById('btnBatalEdit')?.addEventListener('click', () => hideModal('modalEditUser'));
+
+            // Hapus: buka + set action + tampil nama
+            let userIdToDelete = null;
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btnHapus');
+                if (!btn) return;
+                userIdToDelete = btn.dataset.id;
+                document.getElementById('namaUserHapus').textContent = btn.dataset.nama || '';
+                const formHapus = document.getElementById('formHapusUser');
+                formHapus.action = "{{ route('admin.users.destroy', '__ID__') }}".replace('__ID__',
+                    userIdToDelete);
+                showModal('modalKonfirmasiHapus');
+            });
+            document.getElementById('btnBatalHapus')?.addEventListener('click', () => hideModal(
+                'modalKonfirmasiHapus'));
+
+            // Backdrop click
+            document.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('modal-backdrop')) return;
+                if (e.target.closest('#modalTambahUser')) hideModal('modalTambahUser');
+                if (e.target.closest('#modalEditUser')) hideModal('modalEditUser');
+                if (e.target.closest('#modalKonfirmasiHapus')) hideModal('modalKonfirmasiHapus');
+            });
+
+            // ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key !== 'Escape') return;
+                ['modalTambahUser', 'modalEditUser', 'modalKonfirmasiHapus'].forEach(hideModal);
+            });
+
+            // Auto-open modal saat validasi gagal
+            @if ($errors->any() && old('_token'))
+                @if (old('form_type') === 'user_create')
+                    showModal('modalTambahUser');
+                @elseif (old('form_type') === 'user_edit')
+                    showModal('modalEditUser');
+                @endif
+            @endif
+
+            // (opsional) Search + Filter milikmu tetap bisa dipakai
+        });
         let userIdToDelete = null;
 
         // Modal Tambah User

@@ -86,9 +86,14 @@
             <div>
                 <p class="text-sm font-medium text-gray-900 mb-2">Foto Laporan</p>
                 <div class="bg-gray-100 rounded-lg overflow-hidden">
-                    <img src="{{ asset('images/' . $laporan->foto) }}" alt="Foto Laporan" class="w-full h-48 object-cover">
+                    @if ($laporan->foto)
+                        <img src="{{ Storage::url($laporan->foto) }}" alt="Foto Laporan" class="w-full h-48 object-cover">
+                    @else
+                        <p class="text-sm text-gray-500 p-4">Tidak ada foto</p>
+                    @endif
                 </div>
             </div>
+
         </div>
 
         <!-- Deskripsi -->
@@ -122,6 +127,20 @@
                         style="width: {{ $progress }}%"></div>
                 </div>
             </div>
+            <!-- Tombol Aksi -->
+            <div class="flex items-center justify-end mt-6 space-x-3">
+
+                <form action="{{ route('warga.laporan.destroy', $laporan->id) }}" method="POST"
+                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan ini?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700">
+                        Hapus Laporan
+                    </button>
+                </form>
+            </div>
+
 
             {{-- <div class="space-y-4">
                 @foreach ($laporan->timeline as $step)
@@ -144,6 +163,6 @@
             <p class="text-xs text-gray-500 mt-2">
                 Petugas: {{ $laporan->petugas }} - {{ $laporan->tanggal_keterangan->format('d F Y') }}
             </p>
-        </div> --}}        
+        </div> --}}
     </div>
 @endsection

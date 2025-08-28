@@ -23,148 +23,138 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
             <div class="flex space-x-3 mb-4 sm:mb-0">
-                <button id="btnTambahTimRutin"
+                <button id="btnTambahBidang"
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
                     + Tambah Bidang
                 </button>
             </div>
         </div>
+
+
+
         <!-- Tim Cards -->
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($bidangs as $bidang)
-                <div class="bg-white rounded-lg shadow border border-gray-200 p-6 tim-card" data-type="rutin">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{$bidang->nama}}</h3>
-                    <p class="text-sm text-gray-600 mb-4">Tim untuk pemeliharaan infrastruktur rutin area
-                    </p>
-                    <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                        <div>
-                            <span class="text-gray-500">Anggota:</span>
-                            <span class="font-medium">{{ 4 }} orang</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-500">Status:</span>
-                            <span class="font-medium text-green-600">Aktif</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t pt-4">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-500">Jadwal:</span>
-                            <span class="font-medium">Senin - Jumat</span>
-                        </div>
-                        <div class="flex mt-3 justify-between gap-6">
-                            <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                Lihat Detail →
-                            </a>
-                            <div class="flex space-x-1">
-                                <button class="text-gray-400 hover:text-blue-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="text-gray-400 hover:text-red-600 p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+        <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Bidang</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Ketua</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach ($bidangs ?? [] as $bidang)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ $bidang->nama }}</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900">{{ $bidang->ketua->name }}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex space-x-2">
+                                        <a href="{{ route('admin.bidang.show', $bidang->id) }}">
+                                            <p class="text-blue-600 hover:text-blue-800 text-sm font-medium">Detail</p>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
+
+        <!-- Pagination -->
+        @if (method_exists($bidangs, 'links'))
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    Menampilkan {{ $bidangs->firstItem() ?? 0 }}-{{ $bidangs->lastItem() ?? 0 }} dari
+                    {{ $bidangs->total() ?? 0 }} bidang
+                </div>
+                {{ $bidangs->links() }}
+            </div>
+        @else
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    Menampilkan {{ $bidangs->count() }} bidang
+                </div>
+                <nav class="flex items-center space-x-2">
+                    <span class="px-3 py-2 text-sm bg-blue-600 text-white rounded">1</span>
+                </nav>
+            </div>
+        @endif
+    </div>
     </div>
 
     <!-- Modal Form Tim Rutin -->
-    <div id="modalTimRutin" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Tim Rutin</h3>
-                    <form>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Tim</label>
-                                <input type="text"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    placeholder="Contoh: Tim Pemeliharaan Jalan">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                                <textarea rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    placeholder="Deskripsi tugas tim"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jadwal Kerja</label>
-                                <select
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                                    <option>Senin - Jumat</option>
-                                    <option>Senin - Sabtu</option>
-                                    <option>Setiap Hari</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex justify-end space-x-3">
-                            <button type="button" id="btnBatalRutin"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
-                                Batal
-                            </button>
-                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-                                Simpan
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Modal Form Bidang -->
+    <div id="modalBidang" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <!-- Animated Backdrop -->
+        <div class="modal-backdrop fixed inset-0 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+            style="background-color: rgba(0,0,0,0.1);"></div>
 
-    <!-- Modal Form Tim Non-Rutin -->
-    <div id="modalTimNonRutin" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <!-- Modal Container -->
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div
+                class="modal-content bg-white rounded-xl shadow-2xl max-w-md w-full transform scale-95 transition-all duration-300 opacity-0">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Tim Non-Rutin</h3>
-                    <form>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Tambah Bidang</h3>
+                        <button id="btnCloseModalBidang" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form method="POST" action="{{ route('admin.bidang.store') }}">
+                        @csrf
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Tim</label>
-                                <input type="text"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                    placeholder="Contoh: Tim Proyek Jembatan">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Bidang</label>
+                                <input type="text" name="nama" value="{{ old('nama') }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('nama') border-red-300 @enderror"
+                                    placeholder="Contoh: Bidang Bina Marga">
+                                @error('nama')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
+
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Proyek</label>
-                                <textarea rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                    placeholder="Deskripsi proyek khusus"></textarea>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
-                                    <input type="date"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
-                                    <input type="date"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                </div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Ketua Bidang</label>
+                                <select name="ketua_id"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('ketua_id') border-red-300 @enderror">
+                                    <option value="">Pilih Ketua</option>
+                                    @foreach ($users ?? [] as $u)
+                                        <option value="{{ $u->id }}"
+                                            {{ old('ketua_id') == $u->id ? 'selected' : '' }}>
+                                            {{ $u->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('ketua_id')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
+
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button type="button" id="btnBatalNonRutin"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                            <input type="hidden" name="form_type" value="bidang">
+                            <button type="button" id="btnBatalBidang"
+                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200">
                                 Batal
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200 transform hover:scale-105">
                                 Simpan
                             </button>
                         </div>
@@ -173,11 +163,62 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @push('scripts')
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Reusable modal anim
+            function showModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
+
+                modal.classList.remove('hidden');
+                modal.offsetHeight; // reflow
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+                content.classList.remove('opacity-0', 'scale-95');
+                content.classList.add('opacity-100', 'scale-100');
+            }
+
+            function hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                const backdrop = modal.querySelector('.modal-backdrop');
+                const content = modal.querySelector('.modal-content');
+
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                content.classList.remove('opacity-100', 'scale-100');
+                content.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+
+            // Open
+            document.getElementById('btnTambahBidang')?.addEventListener('click', () => showModal('modalBidang'));
+
+            // Close buttons
+            document.getElementById('btnBatalBidang')?.addEventListener('click', () => hideModal('modalBidang'));
+            document.getElementById('btnCloseModalBidang')?.addEventListener('click', () => hideModal(
+                'modalBidang'));
+
+            // Auto-open if validation failed
+            @if ($errors->any() && old('_token') && old('form_type') === 'bidang')
+                showModal('modalBidang');
+            @endif
+
+            // Close on backdrop click
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal-backdrop')) {
+                    if (e.target.closest('#modalBidang')) hideModal('modalBidang');
+                }
+            });
+
+            // ESC to close
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideModal('modalBidang');
+            });
+        });
         // Modal handlers
         document.getElementById('btnTambahTimRutin').addEventListener('click', function() {
             document.getElementById('modalTimRutin').classList.remove('hidden');

@@ -106,15 +106,15 @@ class WargaController extends Controller
 
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
-            $fotoName = time() . '.' . $foto->getClientOriginalExtension();
-            $foto->move(public_path('images'), $fotoName);
+            $path = $foto->store('laporan_foto', 'public');
+            $data['foto'] = $path;
         }
 
         $laporan = Laporan::create([
             'judul' => $request->input('judul'),
             'deskripsi' => $request->input('deskripsi'),
             'alamat' => $request->input('alamat'),
-            'foto' => $fotoName,
+            'foto' => $path,
             'bidang_id' => $request->input('bidang_id'),
             'nama_pelapor' => $request->input('nama_pelapor'),
             'kontak_pelapor' => $request->input('kontak_pelapor'),
@@ -158,5 +158,12 @@ class WargaController extends Controller
         $user->update($data);
 
         return redirect()->route('warga.profile')->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    public function destroyLaporan($id)
+    {
+        $laporan = Laporan::findOrFail($id);
+        $laporan->delete();
+        return redirect()->route('warga.dashboard')->with('success', 'Laporan berhasil dihapus');
     }
 }

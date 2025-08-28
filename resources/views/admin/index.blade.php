@@ -110,7 +110,7 @@
         </div>
 
         <!-- Recent Activity & Charts -->
-        <div class="grid grid-cols-1 ">
+        {{-- <div class="grid grid-cols-1 ">
             <!-- Recent Activity -->
             <div class="lg:col-span-2">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Aktivitas Terbaru Sistem</h2>
@@ -138,6 +138,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
