@@ -58,7 +58,7 @@
                                         'selesai' => 'bg-green-100 text-green-800',
                                         'ditolak' => 'bg-red-100 text-red-800',
                                     ];
-                                    $status = strtolower($item->status ?? ($item['status'] ?? 'pending'));
+                                    $status = strtolower($item->status_penanganan ?? ($item['status'] ?? 'pending'));
                                 @endphp
 
                                 <span
@@ -155,16 +155,7 @@
                                     </p>
                                 </div>
                             @endif
-                        </div>
-
-                        @if ($status === 'selesai')
-                            <div class="flex flex-col space-y-2 ml-4">
-                                <button
-                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium transition duration-300">
-                                    Beri Rating
-                                </button>
-                            </div>
-                        @endif
+                        </div>                
                     </div>
                 </div>
             @empty

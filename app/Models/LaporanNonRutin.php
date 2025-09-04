@@ -14,7 +14,8 @@ class LaporanNonRutin extends Model
         'deskripsi',
         'anggaran',
         'sumber_anggaran',
-        'catatan_anggaran'
+        'catatan_anggaran',
+        'status_review'
     ];
 
     public function timNonRutin()

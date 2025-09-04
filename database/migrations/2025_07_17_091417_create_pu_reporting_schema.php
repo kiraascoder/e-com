@@ -40,7 +40,7 @@ return new class extends Migration {
         });
 
         Schema::create('laporans', function (Blueprint $table) {
-            $table->id();            
+            $table->id();
             $table->string('kode_laporan')->unique();
             $table->string('judul');
             $table->text('deskripsi');
@@ -53,7 +53,7 @@ return new class extends Migration {
                 'lainnya'
             ])->index();
             $table->string('jenis_kerusakan')->nullable();
-            $table->enum('tingkat_kerusakan', ['ringan', 'sedang', 'berat'])->default('ringan')->index();            
+            $table->enum('tingkat_kerusakan', ['ringan', 'sedang', 'berat'])->default('ringan')->index();
             $table->string('alamat');
             $table->string('kecamatan')->nullable();
             $table->string('kelurahan')->nullable();
@@ -112,6 +112,9 @@ return new class extends Migration {
             $table->decimal('anggaran', 15, 2)->nullable();
             $table->string('sumber_anggaran')->nullable();
             $table->text('catatan_anggaran')->nullable();
+            $table->enum('status_review', ['pending', 'approved'])
+                ->default('pending')
+                ->index();
             $table->timestamps();
             $table->foreign('tim_rutin_id')->references('id')->on('tim_rutins')->cascadeOnDelete();
             $table->foreign('penanggung_jawab_id')->references('id')->on('users')->cascadeOnDelete();
@@ -128,6 +131,9 @@ return new class extends Migration {
             $table->decimal('anggaran', 15, 2)->nullable();
             $table->string('sumber_anggaran')->nullable();
             $table->text('catatan_anggaran')->nullable();
+            $table->enum('status_review', ['pending', 'approved'])
+                ->default('pending')
+                ->index();
             $table->timestamps();
             $table->foreign('tim_non_rutin_id')->references('id')->on('tim_non_rutins')->cascadeOnDelete();
             $table->foreign('laporan_id')->references('id')->on('laporans')->cascadeOnDelete();

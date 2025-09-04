@@ -65,6 +65,7 @@ Route::prefix('ketua')->middleware(['auth', 'role:ketua_bidang'])->group(functio
     Route::get('/daftar-laporan', [KetuaBidangController::class, 'laporan'])->name('ketua.laporan');
     Route::get('/review-laporan', [KetuaBidangController::class, 'review'])->name('ketua.review');
     Route::get('/review/laporan-tugas/{laporanTugas}/', [KetuaBidangController::class, 'showReview'])->name('ketua.review.show');
+    Route::patch('/review/{laporanNonRutin}/approve', [KetuaBidangController::class, 'approveNonRutin'])->name('ketua.review.approve');
 });
 
 // Anggota Routes

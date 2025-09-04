@@ -189,11 +189,28 @@
                             </p>
                         </div>
 
-                        <div class="ml-6">
+                        <div class="ml-6 flex flex-col items-end space-y-2">
                             <a href="{{ route('ketua.review.show', $lt) }}"
                                 class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                                 Lihat Detail →
                             </a>
+
+                            @if (($lt->status_review ?? 'pending') !== 'approved')
+                                <form action="{{ route('ketua.review.approve', $lt) }}" method="POST"
+                                    onsubmit="return confirm('Setujui laporan tugas ini?')">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-medium transition">
+                                        Approve
+                                    </button>
+                                </form>
+                            @else
+                                <span
+                                    class="px-3 py-1 text-xs font-semibold rounded bg-green-100 text-green-800 border border-green-200">
+                                    Disetujui
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </div>

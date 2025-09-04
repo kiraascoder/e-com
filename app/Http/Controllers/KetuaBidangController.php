@@ -329,4 +329,27 @@ class KetuaBidangController extends Controller
             ->route('ketua.nonrutin.show', [$timId])
             ->with('success', 'Anggota berhasil ditambahkan');
     }
+    public function approveNonRutin(Request $request, LaporanNonRutin $laporanNonRutin)
+    {
+        
+        $this->authorizeSameBidang($laporanNonRutin);
+        if ($laporanNonRutin->status_review === 'approved') {
+            return back()->with('info', 'Laporan tugas ini sudah disetujui sebelumnya.');
+        }        
+        if (! in_array($laporanNonRutin->status_review, ['pending', 'revision'], true)) {
+            return back()->with('error', 'Status saat ini tidak dapat di-approve.');
+        }
+
+        $laporanNonRutin->forceFill(['status_review' => 'approved'])->save();
+
+        return back()->with('success', 'Laporan tugas berhasil di-approve.');
+    }
+
+    private function authorizeSameBidang(LaporanNonRutin $lr): void
+    {
+        $bidangKetua = Auth::user()->bidang_id;
+        $lr->loadMissing('timNonRutin:id,bidang_id');
+        abort_if(optional($lr->timNonRutin)->bidang_id !== $bidangKetua, 403, 'Tidak berhak mengakses laporan ini.');
+    }
+    
 }

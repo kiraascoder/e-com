@@ -13,7 +13,8 @@ class LaporanRutin extends Model
         'deskripsi',
         'anggaran',
         'sumber_anggaran',
-        'catatan_anggaran'
+        'catatan_anggaran',
+        'status_review'
     ];
 
     public function timRutin()
@@ -24,5 +25,9 @@ class LaporanRutin extends Model
     public function penanggungJawab()
     {
         return $this->belongsTo(User::class, 'penanggung_jawab_id');
+    }
+    public function laporan()
+    {
+        return $this->belongsTo(Laporan::class);
     }
 }
