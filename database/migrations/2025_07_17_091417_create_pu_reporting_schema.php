@@ -40,24 +40,43 @@ return new class extends Migration {
         });
 
         Schema::create('laporans', function (Blueprint $table) {
-            $table->id();
+            $table->id();            
+            $table->string('kode_laporan')->unique();
             $table->string('judul');
             $table->text('deskripsi');
+            $table->enum('kategori_fasilitas', [
+                'jalan',
+                'trotoar',
+                'lampu_jalan',
+                'taman_kota',
+                'saluran_air',
+                'lainnya'
+            ])->index();
+            $table->string('jenis_kerusakan')->nullable();
+            $table->enum('tingkat_kerusakan', ['ringan', 'sedang', 'berat'])->default('ringan')->index();            
             $table->string('alamat');
+            $table->string('kecamatan')->nullable();
+            $table->string('kelurahan')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->string('foto')->nullable();
             $table->unsignedBigInteger('pelapor_id')->nullable();
             $table->foreign('pelapor_id')->references('id')->on('users')->nullOnDelete();
+            $table->boolean('is_anonim')->default(false);
             $table->string('nama_pelapor');
             $table->string('kontak_pelapor')->nullable();
-            $table->enum('status_verifikasi', ['pending', 'diterima', 'ditolak', 'selesai'])->default('pending');
+            $table->enum('status_verifikasi', ['pending', 'diterima', 'ditolak'])->default('pending')->index();
+            $table->enum('status_penanganan', ['menunggu', 'diproses', 'selesai', 'ditunda'])->default('menunggu')->index();
             $table->timestamp('tanggal_laporan')->useCurrent();
+            $table->timestamp('tanggal_selesai')->nullable();
             $table->unsignedBigInteger('bidang_id');
-            $table->timestamps();
-
             $table->foreign('bidang_id')->references('id')->on('bidangs')->cascadeOnDelete();
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index(['kategori_fasilitas', 'tingkat_kerusakan']);
+            $table->index(['status_verifikasi', 'status_penanganan']);
+            $table->index(['latitude', 'longitude']);
         });
-
-
 
 
         Schema::create('tim_non_rutins', function (Blueprint $table) {
@@ -94,7 +113,6 @@ return new class extends Migration {
             $table->string('sumber_anggaran')->nullable();
             $table->text('catatan_anggaran')->nullable();
             $table->timestamps();
-
             $table->foreign('tim_rutin_id')->references('id')->on('tim_rutins')->cascadeOnDelete();
             $table->foreign('penanggung_jawab_id')->references('id')->on('users')->cascadeOnDelete();
         });
@@ -111,7 +129,6 @@ return new class extends Migration {
             $table->string('sumber_anggaran')->nullable();
             $table->text('catatan_anggaran')->nullable();
             $table->timestamps();
-
             $table->foreign('tim_non_rutin_id')->references('id')->on('tim_non_rutins')->cascadeOnDelete();
             $table->foreign('laporan_id')->references('id')->on('laporans')->cascadeOnDelete();
             $table->foreign('penanggung_jawab_id')->references('id')->on('users')->cascadeOnDelete();

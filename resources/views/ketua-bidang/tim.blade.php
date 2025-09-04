@@ -23,13 +23,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
             <div class="flex space-x-3 mb-4 sm:mb-0">
-                <button id="btnTambahTimNonRutin"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300 transform hover:scale-105">
-                    + Tim Non Rutin
-                </button>
                 <button id="btnTambahTimRutin"
-                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300 transform hover:scale-105">
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300 transform hover:scale-105">
                     + Tim Rutin
+                </button>
+                <button id="btnTambahTimNonRutin"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300 transform hover:scale-105">
+                    + Tim Non Rutin
                 </button>
             </div>
             <div class="flex space-x-2">
@@ -248,17 +248,35 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Penanggung Jawab</label>
                                 <select name="penanggung_jawab_id"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('penanggung_jawab_id') border-red-300 @enderror">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 @error('penanggung_jawab_id') border-red-300 @enderror"
+                                    @required(true)>
                                     <option value="">Pilih Penanggung Jawab</option>
-                                    @foreach ($users ?? [] as $pegawai)
-                                        <option value="{{ $pegawai->id }}"
-                                            {{ old('penanggung_jawab_id') == $pegawai->id ? 'selected' : '' }}>
+
+                                    @forelse ($users ?? [] as $pegawai)
+                                        @php
+                                            // Cek ketua_bidang: dukung Spatie atau kolom 'role'
+                                            $isKetuaBidang =
+                                                (method_exists($pegawai, 'hasRole') &&
+                                                    $pegawai->hasRole('ketua_bidang')) ||
+                                                ($pegawai->role ?? null) === 'ketua_bidang';
+                                        @endphp
+
+                                        @continue($isKetuaBidang) {{-- jangan tampilkan ketua_bidang --}}
+
+                                        <option value="{{ $pegawai->id }}" @selected(old('penanggung_jawab_id') == $pegawai->id)>
                                             {{ $pegawai->name }}
+                                            @isset($pegawai->jabatan)
+                                                — {{ $pegawai->jabatan }}
+                                            @endisset
                                         </option>
-                                    @endforeach
+                                    @empty
+                                        <option value="" disabled>Tidak ada pegawai yang memenuhi</option>
+                                    @endforelse
                                 </select>
+
+
                                 @error('penanggung_jawab_id')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -557,7 +575,8 @@
                     row.style.transition = 'opacity 0.5s ease, background-color 0.2s ease';
                     row.style.opacity = '1';
                 }, index * 50);
-            });s
+            });
+            s
         });
     </script>
 @endpush

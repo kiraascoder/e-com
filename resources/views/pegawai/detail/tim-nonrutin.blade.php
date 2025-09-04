@@ -7,7 +7,7 @@
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex items-center justify-between">
-                <div>                    
+                <div>
                     <h1 class="text-2xl font-bold">Tim {{ $timNonRutin->nama_tim }}</h1>
                     <p class="mt-1 text-blue-100">Tim untuk pemeliharaan infrastruktur rutin harian meliputi jalan, saluran
                         air, dan fasilitas umum</p>
@@ -36,7 +36,7 @@
                         </div>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Laporan yang Ditangani</label>
-                            <p class="text-sm text-gray-900">{{ $timNonRutin->laporan->judul }}</p>                            
+                            <p class="text-sm text-gray-900">{{ $timNonRutin->laporan->judul }}</p>
                         </div>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Tanggal Dibentuk</label>
@@ -112,6 +112,63 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            @php
+                // status warna
+                $procColors = [
+                    'menunggu' => 'bg-gray-100 text-gray-800',
+                    'diproses' => 'bg-indigo-100 text-indigo-800',
+                    'ditunda' => 'bg-orange-100 text-orange-800',
+                    'selesai' => 'bg-green-100 text-green-800',
+                ];
+                $statusNow = $timNonRutin->laporan->status_penanganan ?? 'menunggu';
+            @endphp
+
+            <div class="mt-6 pt-6 border-t">
+                <h4 class="text-sm font-medium text-gray-900 mb-2">Status Penanganan Laporan</h4>
+                <span
+                    class="px-3 py-1 text-xs font-semibold rounded-full {{ $procColors[$statusNow] ?? 'bg-gray-100 text-gray-800' }}">
+                    {{ ucfirst($statusNow) }}
+                </span>
+
+                @if (session('success'))
+                    <div class="mt-3 p-2 rounded bg-green-100 text-green-800 border border-green-200 text-sm">
+                        {{ session('success') }}
+                    </div>
+                @endif                
+                @if (auth()->id() === ($timNonRutin->penanggung_jawab_id ?? null))
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        @if (in_array($statusNow, ['menunggu', 'ditunda']))
+                            <form method="POST" action="{{ route('pegawai.tim-nonrutin.status', $timNonRutin) }}"
+                                onsubmit="return confirm('Ubah status menjadi DIPROSES?')">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status_penanganan" value="diproses">
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-medium rounded-md bg-indigo-600 text-white hover:bg-indigo-700">
+                                    Mulai Proses
+                                </button>
+                            </form>
+                        @endif
+
+                        @if (in_array($statusNow, ['diproses']))
+                            <form method="POST" action="{{ route('pegawai.tim-nonrutin.status', $timNonRutin) }}"
+                                onsubmit="return confirm('Tandai SELESAI?')">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status_penanganan" value="selesai">
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-medium rounded-md bg-green-600 text-white hover:bg-green-700">
+                                    Tandai Selesai
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                        Hanya Penanggung Jawab yang dapat memperbarui status. Saat ditandai <b>selesai</b>, sistem akan
+                        mengisi tanggal selesai secara otomatis.
+                    </p>
+                @endif
             </div>
         </div>
     </div>

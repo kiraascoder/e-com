@@ -125,7 +125,7 @@
                     @else
                         <p class="text-sm text-gray-500">Belum ditangani tim non rutin.</p>
                     @endif
-                </div>                
+                </div>
             </div>
 
             {{-- Kolom Kanan: Metadata --}}
@@ -202,7 +202,6 @@
                         @endcan
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

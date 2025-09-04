@@ -95,7 +95,7 @@
                     @include('partials.quick-action', [
                         'title' => 'Laporan Tugas',
                         'description' => 'Laporan pekerjaan lapangan',
-                        'link' => route('pegawai.laporan'),
+                        'link' => route('pegawai.task'),
                         'bgColor' => 'bg-blue-100',
                         'hoverColor' => 'bg-blue-200',
                         'iconColor' => 'text-blue-600',

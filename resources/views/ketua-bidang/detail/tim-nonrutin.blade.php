@@ -9,8 +9,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <div class="flex items-center mb-2">
-                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Tim Rutin</span>
+                        <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                        <span class="px-2 py-1 bg-purple-100 text-green-800 text-xs font-medium rounded-full">Tim Non
+                            Rutin</span>
                     </div>
                     <h1 class="text-2xl font-bold">Tim {{ $timNonRutin->nama_tim }}</h1>
                     <p class="mt-1 text-blue-100">Tim untuk pemeliharaan infrastruktur rutin harian meliputi jalan, saluran
@@ -152,19 +153,31 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Anggota</label>
                                 <select name="user_id"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 @error('penanggung_jawab_id') border-red-300 @enderror">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 @error('user_id') border-red-300 @enderror"
+                                    required>
                                     <option value="">Pilih Anggota</option>
-                                    @foreach ($users ?? [] as $pegawai)
-                                        @if ($pegawai->id !== $timNonRutin->penanggung_jawab_id)
-                                            <option value="{{ $pegawai->id }}"
-                                                {{ old('user_id') == $pegawai->id ? 'selected' : '' }}>
-                                                {{ $pegawai->name }}
-                                            </option>
-                                        @endif
-                                    @endforeach
+
+                                    @forelse ($users ?? [] as $pegawai)
+                                        @php
+                                            // Deteksi ketua_bidang (Spatie vs kolom role)
+                                            $isKetuaBidang = method_exists($pegawai, 'hasRole')
+                                                ? $pegawai->hasRole('ketua_bidang')
+                                                : ($pegawai->role ?? null) === 'ketua_bidang';
+                                        @endphp
+
+                                        @continue($isKetuaBidang) {{-- jangan tampilkan ketua_bidang --}}
+                                        @continue($pegawai->id == ($timNonRutin->penanggung_jawab_id ?? null)) {{-- hindari PJ masuk anggota --}}
+
+                                        <option value="{{ $pegawai->id }}" @selected(old('user_id') == $pegawai->id)>
+                                            {{ $pegawai->name }}
+                                        </option>
+                                    @empty
+                                        <option value="" disabled>Tidak ada anggota yang memenuhi</option>
+                                    @endforelse
                                 </select>
-                                @error('users_id')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+
+                                @error('user_id')
+                                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="mt-6 flex justify-end space-x-3">

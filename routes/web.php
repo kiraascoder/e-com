@@ -58,10 +58,13 @@ Route::prefix('ketua')->middleware(['auth', 'role:ketua_bidang'])->group(functio
     Route::get('/timnonrutin/{id}/detail', [KetuaBidangController::class, 'timNonRutinShow'])->name('ketua.nonrutin.show');
     Route::get('/timnonrutin/{id}/detail-laporan', [KetuaBidangController::class, 'detailLaporan'])->name('ketua.detail-laporan.show');
     Route::get('/laporan/{id}/detail-laporan', [KetuaBidangController::class, 'detailLaporan'])->name('ketua.detail-laporan.single.show');
+    Route::get('/laporan/{id}', [KetuaBidangController::class, 'show'])->name('laporan.show');
+    Route::post('/laporan/{id}/verify', [KetuaBidangController::class, 'verify'])->name('laporan.verify');
     Route::post('/timnonrutin-store', [KetuaBidangController::class, 'timNonRutinStore'])->name('ketua.nonrutin.store');
     Route::get('/tim/{id}', [KetuaBidangController::class, 'detailTim'])->name('ketua.tim.show');
     Route::get('/daftar-laporan', [KetuaBidangController::class, 'laporan'])->name('ketua.laporan');
     Route::get('/review-laporan', [KetuaBidangController::class, 'review'])->name('ketua.review');
+    Route::get('/review/laporan-tugas/{laporanTugas}/', [KetuaBidangController::class, 'showReview'])->name('ketua.review.show');
 });
 
 // Anggota Routes
@@ -71,7 +74,15 @@ Route::prefix('pegawai')->middleware(['auth', 'role:pegawai'])->group(function (
     Route::get('/timrutin/{id}/detail', [PegawaiController::class, 'timRutinShow'])->name('pegawai.rutin.show');
     Route::get('/timnonrutin/{id}/detail', [PegawaiController::class, 'timNonRutinShow'])->name('pegawai.nonrutin.show');
     Route::get('/laporan', [PegawaiController::class, 'laporan'])->name('pegawai.laporan');
+    Route::get('/task', [PegawaiController::class, 'task'])->name('pegawai.task');
+    Route::get('/tim-non-rutin/{timNonRutin}/laporan-tugas/create', [PegawaiController::class, 'taskSubmit'])
+        ->name('pegawai.laporan-tugas.create');
+    Route::post('/tim-non-rutin/{timNonRutin}/laporan-tugas', [PegawaiController::class, 'storeTask'])
+        ->name('pegawai.laporan-tugas.store');
     Route::get('/laporan/{id}/detail', [PegawaiController::class, 'detailLaporan'])->name('pegawai.laporan.show');
+    Route::patch('/tim-non-rutin/{timNonRutin}/status', [PegawaiController::class, 'updateStatus'])
+        ->name('pegawai.tim-nonrutin.status')
+        ->middleware(['auth']);
 });
 
 Route::post('/logout', [SesiController::class, 'logout'])->name('logout');

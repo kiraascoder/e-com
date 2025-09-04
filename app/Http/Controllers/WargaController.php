@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Bidang;
 use App\Models\Laporan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class WargaController extends Controller
 {
@@ -78,53 +81,89 @@ class WargaController extends Controller
 
     public function storeLaporan(Request $request)
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'alamat' => 'required|string',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'bidang_id' => 'required|exists:bidangs,id',
-            'nama_pelapor' => 'required|string|max:255',
-            'kontak_pelapor' => 'required|string|max:255',
-            'tanggal_laporan' => 'required|date',
-        ], [
-            'judul.required' => 'Judul wajib diisi',
-            'judul.max' => 'Judul tidak boleh lebih dari 255 karakter',
-            'deskripsi.required' => 'Deskripsi wajib diisi',
-            'deskripsi.max' => 'Deskripsi tidak boleh lebih dari 255 karakter',
-            'alamat.required' => 'Alamat wajib diisi',
-            'foto.required' => 'Foto wajib diisi',
-            'foto.image' => 'Foto harus berupa gambar',
-            'foto.mimes' => 'Format gambar tidak valid',
-            'foto.max' => 'Ukuran gambar maksimal 2MB',
-            'bidang_id.required' => 'Bidang wajib diisi',
-            'nama_pelapor.required' => 'Nama pelapor wajib diisi',
-            'kontak_pelapor.required' => 'Kontak pelapor wajib diisi',
-            'tanggal_laporan.required' => 'Tanggal laporan wajib diisi',
+        // Validasi input
+        $validated = $request->validate([
+            'judul'              => ['required', 'string', 'max:255'],
+            'deskripsi'          => ['required', 'string'],
+            'kategori_fasilitas' => ['required', Rule::in(['jalan', 'trotoar', 'lampu_jalan', 'taman_kota', 'saluran_air', 'lainnya'])],
+            'jenis_kerusakan'    => ['nullable', 'string', 'max:100'],
+            'tingkat_kerusakan'  => ['required', Rule::in(['ringan', 'sedang', 'berat'])],
 
+            'alamat'    => ['required', 'string', 'max:255'],
+            'kecamatan' => ['nullable', 'string', 'max:100'],
+            'kelurahan' => ['nullable', 'string', 'max:100'],
+            'latitude'  => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+
+            'foto'            => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'lampiran.*'      => ['nullable', 'file', 'max:5120'], // opsional, jika pakai tabel lampiran
+
+            'is_anonim'      => ['sometimes', 'boolean'],
+            'nama_pelapor'   => ['required_unless:is_anonim,1', 'string', 'max:100'],
+            'kontak_pelapor' => ['nullable', 'string', 'max:50'],
+
+            // status boleh tidak dikirim (pakai default)
+            'status_verifikasi' => ['sometimes', Rule::in(['pending', 'diterima', 'ditolak'])],
+            'status_penanganan' => ['sometimes', Rule::in(['menunggu', 'diproses', 'selesai', 'ditunda'])],
+
+            // penanggung jawab internal
+            'bidang_id' => ['required', 'exists:bidangs,id'],            
         ]);
 
+        $isAnonim  = (bool) ($validated['is_anonim'] ?? false);
+        $pelaporId = (!$isAnonim && Auth::check()) ? Auth::id() : null;
+
+        // Upload foto bukti (jika ada)
+        $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $foto = $request->file('foto');
-            $path = $foto->store('laporan_foto', 'public');
-            $data['foto'] = $path;
+            $fotoPath = $request->file('foto')->store('laporan/foto', 'public');
         }
 
-        $laporan = Laporan::create([
-            'judul' => $request->input('judul'),
-            'deskripsi' => $request->input('deskripsi'),
-            'alamat' => $request->input('alamat'),
-            'foto' => $path,
-            'bidang_id' => $request->input('bidang_id'),
-            'nama_pelapor' => $request->input('nama_pelapor'),
-            'kontak_pelapor' => $request->input('kontak_pelapor'),
-            'tanggal_laporan' => $request->input('tanggal_laporan'),
-            'pelapor_id' => auth()->id(),
-        ]);
+        // Simpan ke DB (pakai transaksi + lampiran opsional)
+        $laporan = DB::transaction(function () use ($validated, $isAnonim, $pelaporId, $fotoPath, $request) {
+            $laporan = Laporan::create([
+                'kode_laporan'      => $this->generateKodeLaporan(),
+                'judul'             => $validated['judul'],
+                'deskripsi'         => $validated['deskripsi'],
 
-        $laporan->save();
+                'kategori_fasilitas' => $validated['kategori_fasilitas'],
+                'jenis_kerusakan'   => $validated['jenis_kerusakan'] ?? null,
+                'tingkat_kerusakan' => $validated['tingkat_kerusakan'],
 
-        return redirect()->route('warga.dashboard')->with('success', 'Laporan berhasil dibuat!');
+                'alamat'    => $validated['alamat'],
+                'kecamatan' => $validated['kecamatan'] ?? null,
+                'kelurahan' => $validated['kelurahan'] ?? null,
+                'latitude'  => $validated['latitude'] ?? null,
+                'longitude' => $validated['longitude'] ?? null,
+
+                'foto'       => $fotoPath,
+                'pelapor_id' => $pelaporId,
+                'is_anonim'  => $isAnonim,
+                'nama_pelapor'   => $isAnonim ? 'Anonim' : $validated['nama_pelapor'],
+                'kontak_pelapor' => $isAnonim ? null : ($validated['kontak_pelapor'] ?? null),
+
+                'status_verifikasi' => $validated['status_verifikasi'] ?? 'pending',
+                'status_penanganan' => $validated['status_penanganan'] ?? 'menunggu',
+
+                'tanggal_laporan' => now(),
+                'bidang_id'       => $validated['bidang_id'],
+                
+            ]);
+            
+
+            return $laporan;
+        });
+        return redirect()
+            ->route('warga.dashboard', $laporan->id)
+            ->with('success', 'Laporan berhasil dikirim. Terima kasih atas partisipasi Anda!');
+    }
+    private function generateKodeLaporan(): string
+    {
+        do {
+            $code = 'LPR-' . now()->format('Ymd') . '-' . str_pad((string)random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        } while (Laporan::where('kode_laporan', $code)->exists());
+
+        return $code;
     }
 
     public function profileUpdate(Request $request)

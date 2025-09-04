@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Laporan;
+use App\Models\LaporanNonRutin;
 use App\Models\TimNonRutin;
 use App\Models\TimNonRutinUsers;
 use App\Models\TimRutin;
@@ -11,6 +12,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class KetuaBidangController extends Controller
 {
@@ -25,14 +28,31 @@ class KetuaBidangController extends Controller
 
     public function tim()
     {
-        $usedPJ = TimNonRutin::pluck('penanggung_jawab_id')->filter();
+
+        $busyPJ = TimNonRutin::where('bidang_id', Auth::user()->bidang_id)
+            ->whereHas('laporan', function ($q) {
+                $q->whereIn('status_penanganan', ['menunggu', 'diproses', 'ditunda']); // ≠ selesai
+            })
+            ->pluck('penanggung_jawab_id')
+            ->filter()
+            ->unique()
+            ->toArray();
+
+
         $users = User::where('bidang_id', Auth::user()->bidang_id)
-            ->whereNotIn('id', $usedPJ)
+            ->whereNotIn('id', $busyPJ)
+            ->where(function ($q) {
+
+                $q->whereNull('role')->orWhere('role', '!=', 'ketua_bidang');
+            })
+
             ->orderBy('name')
             ->get();
-        $timRutin = TimRutin::where('bidang_id', Auth::user()->bidang_id)->get();
+
+        $timRutin   = TimRutin::where('bidang_id', Auth::user()->bidang_id)->get();
         $timNonRutin = TimNonRutin::where('bidang_id', Auth::user()->bidang_id)->get();
-        $laporans = Laporan::where('bidang_id', Auth::user()->bidang_id)->get();
+        $laporans   = Laporan::where('bidang_id', Auth::user()->bidang_id)->get();
+
         return view('ketua-bidang.tim', compact('users', 'timRutin', 'timNonRutin', 'laporans'));
     }
 
@@ -109,10 +129,51 @@ class KetuaBidangController extends Controller
         $anggotaTim = User::orderBy('name')->get();
         return view('ketua-bidang.detail.tim-nonrutin', compact('timNonRutin', 'users', 'anggotaTim', 'timNonRutinAnggota'));
     }
+    public function show(Request $request, Laporan $laporan)
+    {
+        // Eager load relasi yang dibutuhkan modal
+        $laporan->load([
+            'bidang:id,nama',
+        ]);
+
+        // Siapkan payload dengan field terformat
+        $data = $laporan->toArray(); // sudah termasuk $appends: foto_url, koordinat
+        $data['tanggal_laporan_formatted'] = optional($laporan->tanggal_laporan)->format('d M Y H:i');
+        $data['tanggal_selesai_formatted'] = optional($laporan->tanggal_selesai)->format('d M Y H:i');
+
+        return response()->json([
+            'success' => true,
+            'laporan' => $data,
+        ]);
+    }
     public function detailLaporan($id)
     {
         $laporan = Laporan::find($id);
         return view('ketua-bidang.detail.laporan', compact('laporan'));
+    }
+    public function verify(Request $request, $id)
+    {
+        $laporan = Laporan::findOrFail($id);
+        $validated = $request->validate([
+            'status_verifikasi'   => ['required', Rule::in(['diterima', 'ditolak'])],
+            'catatan_verifikasi'  => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        DB::transaction(function () use ($laporan, $validated) {
+            $laporan->status_verifikasi = $validated['status_verifikasi'];
+            if ($validated['status_verifikasi'] === 'ditolak') {
+                $laporan->status_penanganan = 'menunggu';
+                $laporan->tanggal_selesai   = null;
+            } elseif (! in_array($laporan->status_penanganan, ['menunggu', 'diproses', 'ditunda', 'selesai'], true)) {
+                $laporan->status_penanganan = 'menunggu';
+            }
+            $laporan->save();
+        });
+
+        return back()->with(
+            'success',
+            $validated['status_verifikasi'] === 'diterima' ? 'Laporan berhasil diterima.' : 'Laporan berhasil ditolak.'
+        );
     }
 
     public function timNonRutinStore(Request $request)
@@ -162,9 +223,75 @@ class KetuaBidangController extends Controller
         return view('ketua-bidang.laporan-warga', compact('laporans', 'stats'));
     }
 
-    public function review()
+    public function review(Request $request)
     {
-        return view('ketua-bidang.review');
+        $base = LaporanNonRutin::with([
+            'timNonRutin:id,nama_tim,penanggung_jawab_id,bidang_id',
+            'timNonRutin.penanggungJawab:id,name,email',
+            'laporan:id,judul,kode_laporan,alamat,status_verifikasi,status_penanganan,tanggal_selesai',
+            'penanggungJawab:id,name,email',
+        ])
+            ->whereHas('timNonRutin', function ($q) {
+                $q->where('bidang_id', Auth::user()->bidang_id);
+            });
+
+
+        if (Schema::hasColumn('laporan_non_rutins', 'status_review')) {
+            if ($request->filled('status_review')) {
+                $base->where('status_review', $request->string('status_review'));
+            }
+        }
+
+
+        if ($request->filled('search')) {
+            $s = '%' . $request->string('search')->toString() . '%';
+            $base->where(function ($q) use ($s) {
+                $q->whereHas('laporan', fn($qq) => $qq->where('judul', 'like', $s))
+                    ->orWhereHas('timNonRutin', fn($qq) => $qq->where('nama_tim', 'like', $s))
+                    ->orWhereHas('penanggungJawab', fn($qq) => $qq->where('name', 'like', $s));
+            });
+        }
+
+
+        $total = (clone $base)->count();
+        $approved = $needsRevision = $pending = 0;
+        if (Schema::hasColumn('laporan_non_rutins', 'status_review')) {
+            $approved      = (clone $base)->where('status_review', 'approved')->count();
+            $needsRevision = (clone $base)->where('status_review', 'revision')->count();
+            $pending       = $total - $approved - $needsRevision;
+        } else {
+
+            $pending = $total;
+        }
+
+
+        $laporanTugas = $base->latest()->paginate(12)->withQueryString();
+
+        $stats = [
+            'total_reports'  => $total,
+            'pending_review' => $pending,
+            'approved'       => $approved,
+            'needs_revision' => $needsRevision,
+        ];
+
+        return view('ketua-bidang.review', compact('laporanTugas', 'stats'));
+    }
+    public function showReview(LaporanNonRutin $laporanTugas)
+    {
+        // Otorisasi per-bidang
+        $laporanTugas->loadMissing([
+            'timNonRutin:id,nama_tim,penanggung_jawab_id,bidang_id,deskripsi,created_at',
+            'timNonRutin.penanggungJawab:id,name,email',
+            'laporan:id,judul,kode_laporan,alamat,status_verifikasi,status_penanganan,tanggal_selesai,foto',
+            'penanggungJawab:id,name,email',
+        ]);
+
+        abort_unless(
+            $laporanTugas->timNonRutin && $laporanTugas->timNonRutin->bidang_id === Auth::user()->bidang_id,
+            403
+        );
+
+        return view('ketua-bidang.detail.review', compact('laporanTugas'));
     }
 
     public function storeAnggotaRutin(Request $request, $timId)
