@@ -23,7 +23,7 @@ class AdminController extends Controller
 
     public function laporan(Request $request)
     {
-        
+
         $base = Laporan::with(['bidang', 'user']);
         if ($search = trim((string) $request->get('search'))) {
             $base->where(function ($q) use ($search) {
@@ -34,17 +34,17 @@ class AdminController extends Controller
 
         if ($bidangId = $request->get('bidang_id')) {
             $base->where('bidang_id', $bidangId);
-        }        
+        }
         $forStats = clone $base;
         $stats = [
             'pending'  => (clone $forStats)->where('status_verifikasi', 'pending')->count(),
             'diterima' => (clone $forStats)->where('status_verifikasi', 'diterima')->count(),
             'selesai'  => (clone $forStats)->where('status_verifikasi', 'selesai')->count(),
             'ditolak'  => (clone $forStats)->where('status_verifikasi', 'ditolak')->count(),
-        ];        
+        ];
         if ($status = $request->get('status_verifikasi')) {
             $base->where('status_verifikasi', $status);
-        }        
+        }
         switch ($request->get('sort_by')) {
             case 'tanggal_terlama':
                 $base->orderBy('tanggal_laporan', 'asc')->orderBy('created_at', 'asc');
@@ -56,7 +56,7 @@ class AdminController extends Controller
             default:
                 $base->orderBy('tanggal_laporan', 'desc')->orderBy('created_at', 'desc');
                 break;
-        }        
+        }
         $laporans = $base->paginate(10)->withQueryString();
         $bidangs = Bidang::orderBy('nama')->get();
 
@@ -104,13 +104,15 @@ class AdminController extends Controller
     public function bidang()
     {
         $bidangs = Bidang::with('ketua')->paginate(10);
+
         $users = User::where('role', 'ketua_bidang')
             ->whereDoesntHave('bidangKetua')
-            ->orderBy('name')
+            ->orderBy('name') 
             ->get();
 
         return view('admin.bidang', compact('bidangs', 'users'));
     }
+
 
     public function showBidang($id)
     {

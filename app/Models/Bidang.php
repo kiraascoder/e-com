@@ -13,8 +13,9 @@ class Bidang extends Model
     protected $fillable = ['nama', 'ketua_id'];
 
     public function ketua()
-    {
-        return $this->belongsTo(User::class, 'ketua_id');
+    {        
+        return $this->belongsTo(User::class, 'ketua_id')
+            ->withDefault(['nama' => 'Belum ditetapkan']);
     }
 
     public function timRutins()
@@ -26,5 +27,4 @@ class Bidang extends Model
     {
         return $this->hasMany(Laporan::class);
     }
-    
 }

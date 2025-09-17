@@ -105,56 +105,6 @@
                                                                                                                                 </svg>',
                 ])
             </div>
-        </div>
-
-        <!-- Team Status & Recent Reports -->
-        <div class="grid grid-cols-1">            
-            <!-- Recent Reports -->
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-6">Laporan Terbaru</h2>
-                <div class="space-y-4">
-                    @foreach ($recent_reports ?? [] as $report)
-                        <div class="bg-white rounded-lg shadow border border-gray-200 p-4">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <h3 class="font-medium text-gray-900">{{ $report['title'] ?? 'Perbaikan Jalan Utama' }}
-                                    </h3>
-                                    <p class="text-sm text-gray-600 mt-1">
-                                        {{ Str::limit($report['description'] ?? 'Kerusakan jalan di area utama perlu perbaikan segera', 60) }}
-                                    </p>
-                                    <div class="flex items-center mt-2 text-xs text-gray-500">
-                                        <span>{{ $report['location'] ?? 'Jl. Sudirman' }}</span>
-                                        <span class="mx-2">•</span>
-                                        <span>{{ $report['created_at'] ?? '2 jam lalu' }}</span>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    @php
-                                        $statusColors = [
-                                            'pending' => 'bg-yellow-100 text-yellow-800',
-                                            'assigned' => 'bg-blue-100 text-blue-800',
-                                            'in_progress' => 'bg-blue-100 text-blue-800',
-                                            'completed' => 'bg-green-100 text-green-800',
-                                        ];
-                                    @endphp
-                                    <span
-                                        class="px-2 py-1 text-xs font-medium rounded-full {{ $statusColors[$report['status'] ?? 'pending'] }}">
-                                        {{ ucfirst($report['status'] ?? 'Pending') }}
-                                    </span>
-                                </div>
-                            </div>
-                            @if ($report['status'] === 'pending')
-                                <div class="mt-3 pt-3 border-t border-gray-200">
-                                    <a href=""
-                                        class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md transition duration-300">
-                                        Assign Tim
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
+        </div>        
     </div>
 @endsection

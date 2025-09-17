@@ -51,12 +51,14 @@
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4">
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">
+                                        <div class="t   ext-sm font-medium text-gray-900">
                                             {{ $bidang->nama }}</div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-900">{{ $bidang->ketua->name }}</div>
+                                    <div class="text-sm text-gray-900">
+                                        {{ $bidang->ketua->nama }}
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-2">

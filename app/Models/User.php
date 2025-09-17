@@ -51,7 +51,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    
+
     public function bidangKetua()
     {
         return $this->hasOne(Bidang::class, 'ketua_id');

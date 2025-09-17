@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\KetuaBidangController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\SesiController;
 use App\Http\Controllers\WargaController;
 use Illuminate\Support\Facades\Route;
@@ -87,3 +88,5 @@ Route::prefix('pegawai')->middleware(['auth', 'role:pegawai'])->group(function (
 });
 
 Route::post('/logout', [SesiController::class, 'logout'])->name('logout');
+Route::get('/bidang', [PublicController::class, 'bidang'])->name('bidang.index');
+Route::get('/tentang', [PublicController::class, 'tentang'])->name('tentang.index');

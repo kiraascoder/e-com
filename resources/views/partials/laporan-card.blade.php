@@ -18,7 +18,7 @@
             @endphp
             <span
                 class="px-2 py-1 text-xs font-medium rounded-full {{ $statusColors[$laporan['status_verifikasi']] ?? 'bg-gray-100 text-gray-800' }}">
-                {{ $statusText[$laporan['status_penanganan']] ?? 'Unknown' }}
+                {{ $statusText[$laporan['status_verifikasi']] ?? 'Unknown' }}
             </span>
         </div>
 
