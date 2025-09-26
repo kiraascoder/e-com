@@ -11,7 +11,7 @@
                 ];
                 $statusText = [
                     'pending' => 'Menunggu',
-                    'diterima' => 'Dalam Proses',
+                    'diterima' => 'Selesai',
                     'selesai' => 'Selesai',
                     'ditolak' => 'Ditolak',
                 ];

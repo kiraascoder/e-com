@@ -144,12 +144,7 @@
                             <span class="text-gray-500">Kontak:</span>
                             <span class="font-medium text-gray-900">{{ $laporan->kontak_pelapor ?? '—' }}</span>
                         </p>
-                        <p class="text-sm">
-                            <span class="text-gray-500">Akun Pelapor:</span>
-                            <span class="font-medium text-gray-900">
-                                {{ $laporan->user?->email ?? '—' }}
-                            </span>
-                        </p>
+                  
                     </div>
                 </div>
 
@@ -165,6 +160,14 @@
                             <span class="font-medium text-gray-900">{{ $laporan->bidang?->nama ?? '—' }}</span>
                         </p>
                         <p class="text-sm">
+                            <span class="text-gray-500">Kategori:</span>
+                            <span class="font-medium text-gray-900">{{ $laporan->kategori_fasilitas }}</span>
+                        </p>
+                        <p class="text-sm">
+                            <span class="text-gray-500">Jenis Kerusakan:</span>
+                            <span class="font-medium text-gray-900">{{ $laporan->jenis_kerusakan ?? '—' }}</span>
+                        </p>
+                        <p class="text-sm">
                             <span class="text-gray-500">Tanggal Laporan:</span>
                             <span class="font-medium text-gray-900">
                                 {{ $laporan->tanggal_laporan?->format('d M Y') ?? ($laporan->tanggal_laporan ? \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d M Y') : '—') }}
@@ -173,7 +176,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                     <h2 class="text-base font-semibold text-gray-900 mb-3">Aksi</h2>
                     <div class="flex flex-wrap gap-2">
                         <a href="{{ url()->previous() }}"
@@ -181,25 +184,16 @@
                             Kembali
                         </a>
 
-                        {{-- Contoh tombol aksi lain (sesuaikan route & policy) --}}
-                        @can('update', $laporan)
-                            <a href="{{ route('laporan.edit', $laporan->id) }}"
-                                class="inline-flex items-center px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-medium">
-                                Edit Laporan
-                            </a>
-                        @endcan
 
-                        @can('delete', $laporan)
-                            <form action="{{ route('laporan.destroy', $laporan->id) }}" method="POST"
-                                onsubmit="return confirm('Hapus laporan ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="inline-flex items-center px-3 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 text-sm font-medium">
-                                    Hapus
-                                </button>
-                            </form>
-                        @endcan
+                        <form action="{{ route('ketua.laporan.destroy', $laporan->id) }}" method="POST"
+                            onsubmit="return confirm('Yakin ingin menghapus laporan ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="inline-flex items-center px-3 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 text-sm font-medium">
+                                Hapus Laporan
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,7 @@
                     <h1 class="text-2xl font-bold">Buat Laporan Baru</h1>
                     <p class="mt-1 text-blue-100">Laporkan masalah infrastruktur di sekitar Anda</p>
                 </div>
-                <a href="{{ route('warga.dashboard') }}"
+                <a href="{{ route('home') }}"
                     class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
                     ← Kembali
                 </a>
@@ -77,19 +77,15 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="tingkat_kerusakan" class="block text-sm font-medium text-gray-700 mb-2">
-                            Tingkat Kerusakan
+                    {{-- Input tambahan jika pilih "lainnya" --}}
+                    <div id="input_lainnya_wrapper" class="hidden">
+                        <label for="kategori_lainnya" class="block text-sm font-medium text-gray-700 mb-2">
+                            Kategori Lainnya
                         </label>
-                        <select id="tingkat_kerusakan" name="tingkat_kerusakan" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500">
-                            @foreach (['ringan', 'sedang', 'berat'] as $t)
-                                <option value="{{ $t }}" @selected(old('tingkat_kerusakan') === $t)>
-                                    {{ ucfirst($t) }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('tingkat_kerusakan')
+                        <input type="text" id="kategori_lainnya" name="kategori_lainnya"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500"
+                            value="{{ old('kategori_lainnya') }}">
+                        @error('kategori_lainnya')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -324,5 +320,23 @@
                 maximumAge: 0
             });
         });
+          document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("kategori_fasilitas");
+        const inputWrapper = document.getElementById("input_lainnya_wrapper");
+
+        function toggleInput() {
+            if (select.value === "lainnya") {
+                inputWrapper.classList.remove("hidden");
+            } else {
+                inputWrapper.classList.add("hidden");
+            }
+        }
+
+        // Jalankan saat halaman pertama kali dimuat
+        toggleInput();
+
+        // Jalankan ketika user mengubah pilihan
+        select.addEventListener("change", toggleInput);
+    });
     </script>
 @endpush

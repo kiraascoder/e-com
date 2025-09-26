@@ -3,8 +3,10 @@
 @section('title', 'Beranda')
 
 @section('content')
+    @include('partials.flash')
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-r from-blue-800 to-blue-600 text-white">
+        
         <div class="absolute inset-0 bg-black opacity-20"></div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div class="text-center">
@@ -43,9 +45,9 @@
                             Masuk
                         </a>
                     @endauth
-                    <a href=""
+                    <a href="{{route('warga.buat.laporan')}}"
                         class="border-2 border-white text-white hover:bg-white hover:text-blue-800 px-8 py-3 rounded-lg font-semibold transition duration-300">
-                        Pelajari Lebih Lanjut
+                        Laporkan Masalah
                     </a>
                 </div>
             </div>
