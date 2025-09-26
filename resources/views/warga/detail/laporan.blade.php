@@ -61,9 +61,7 @@
             <span class="px-3 py-1 text-xs font-medium rounded-full bg-sky-100 text-sky-800">
                 Kategori: {{ $kategoriLabel }}
             </span>
-            <span class="px-3 py-1 text-xs font-medium rounded-full bg-rose-100 text-rose-800">
-                Tingkat: {{ ucfirst($laporan->tingkat_kerusakan) }}
-            </span>
+    
             @if ($laporan->jenis_kerusakan)
                 <span class="px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-800">
                     Jenis: {{ $laporan->jenis_kerusakan }}

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
@@ -134,37 +135,60 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::orderBy('created_at', 'desc')->paginate(10);
-        return view('admin.kelola-user', compact('users'));
+          $bidangs = Bidang::orderBy('nama')->get();
+        return view('admin.kelola-user', compact('users', 'bidangs'));
     }
 
-    public function storeUser(Request $request)
-    {
-        $validated = $request->validate([
-            'name'           => ['required', 'string', 'max:255'],
-            'email'          => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-            'password'       => ['required', 'string', 'min:6'],
-            'role'           => ['required', Rule::in(['Admin', 'Ketua Bidang', 'Pegawai', 'Warga'])],
-            'alamat'         => ['nullable', 'string', 'max:255'],
-            'no_telepon'     => ['nullable', 'string', 'max:50'],
-            'jenis_kelamin'  => ['nullable', Rule::in(['L', 'P', 'Laki-laki', 'Perempuan'])],
-            'tanggal_lahir'  => ['nullable', 'date'],
-        ], [], [
-            'name'          => 'Nama',
-            'email'         => 'Email',
-            'password'      => 'Password',
-            'role'          => 'Role',
-            'alamat'        => 'Alamat',
-            'no_telepon'    => 'No. Telepon',
-            'jenis_kelamin' => 'Jenis Kelamin',
-            'tanggal_lahir' => 'Tanggal Lahir',
-        ]);
 
-        $user = User::create($validated);
+public function storeUser(Request $request)
+{
+    $validated = $request->validate([
+        'name'           => ['required', 'string', 'max:255'],
+        'nip'            => ['required', 'string', 'max:50', 'unique:users,nip'],
+        'email'          => ['required', 'string', 'email', 'lowercase', 'max:255', 'unique:users,email'],
+        'password'       => ['required', 'string', 'min:6'],
+        'role'           => ['required', Rule::in(['admin', 'ketua_bidang', 'pegawai', 'warga', 'kepala_dinas'])],
+        'alamat'         => ['nullable', 'string', 'max:255'],
+        'no_telepon'     => ['nullable', 'string', 'max:50'],
+        // migration menyimpan 'Laki-Laki' / 'Perempuan'
+        'jenis_kelamin'  => ['nullable', Rule::in(['L', 'P', 'Laki-Laki', 'Perempuan'])],
+        'tanggal_lahir'  => ['nullable', 'date'],
+        'bidang_id'      => ['nullable', 'integer', 'exists:bidangs,id'], // opsional
+    ], [], [
+        'name'          => 'Nama',
+        'nip'           => 'NIP',
+        'email'         => 'Email',
+        'password'      => 'Password',
+        'role'          => 'Role',
+        'alamat'        => 'Alamat',
+        'no_telepon'    => 'No. Telepon',
+        'jenis_kelamin' => 'Jenis Kelamin',
+        'tanggal_lahir' => 'Tanggal Lahir',
+        'bidang_id'     => 'Bidang',
+    ]);
 
-        return redirect()
-            ->route('admin.users')
-            ->with('success', 'User berhasil ditambahkan.');
-    }
+    // Samakan ke format enum di migration: 'Laki-Laki' / 'Perempuan'
+    $jk = $request->input('jenis_kelamin');
+    if (in_array($jk, ['L', 'Laki-laki', 'l', 'laki-laki'])) $jk = 'Laki-Laki';
+    if (in_array($jk, ['P', 'Perempuan', 'p'])) $jk = 'Perempuan';
+
+    $data = [
+        'name'          => trim($validated['name']),
+        'nip'           => trim($validated['nip']),
+        'email'         => strtolower(trim($validated['email'])),
+        'password'      => Hash::make($validated['password']),
+        'role'          => $validated['role'],
+        'alamat'        => $validated['alamat'] ?? null,
+        'no_telepon'    => $validated['no_telepon'] ?? null,
+        'jenis_kelamin' => $jk ?? null,
+        'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+        'bidang_id'     => $validated['bidang_id'] ?? null,
+    ];
+
+    $user = User::create($data);
+
+    return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
+}
 
     public function detailUser($id)
     {

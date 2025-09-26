@@ -56,6 +56,13 @@ class KetuaBidangController extends Controller
         return view('ketua-bidang.tim', compact('users', 'timRutin', 'timNonRutin', 'laporans'));
     }
 
+        public function destroyLaporan($id)
+    {
+        $laporan = Laporan::findOrFail($id);
+        $laporan->delete();
+        return redirect()->route('ketua.dashboard')->with('success', 'Laporan berhasil dihapus');
+    }
+
     public function timRutinStore(Request $request)
     {
         $request->validate([

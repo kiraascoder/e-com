@@ -144,12 +144,6 @@
                             <span class="text-gray-500">Kontak:</span>
                             <span class="font-medium text-gray-900">{{ $laporan->kontak_pelapor ?? '—' }}</span>
                         </p>
-                        <p class="text-sm">
-                            <span class="text-gray-500">Akun Pelapor:</span>
-                            <span class="font-medium text-gray-900">
-                                {{ $laporan->user?->email ?? '—' }}
-                            </span>
-                        </p>
                     </div>
                 </div>
 

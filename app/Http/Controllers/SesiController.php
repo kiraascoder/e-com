@@ -45,8 +45,8 @@ class SesiController extends Controller
                 return redirect('/ketua/dashboard');
             } elseif ($user->role == 'pegawai') {
                 return redirect('/pegawai/dashboard');
-            } elseif ($user->role == 'warga') {
-                return redirect('warga/dashboard');
+            } elseif ($user->role == 'kepala_dinas') {
+                return redirect('kepala-dinas/dashboard');
             }
         }
         return redirect('/login')->withErrors(['login' => 'Login Gagal, Email atau Password tidak sesuai!'])->withInput();

@@ -5,8 +5,10 @@
             <div class="flex items-center">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <img class="h-8 w-8" src="{{ asset('images/logo-dinas.svg') }}" alt="Logo Dinas PU">
-                    <span class="ml-2 text-white text-lg font-semibold">Dinas PU</span>
+                    
+                        <img class="h-8 w-8" src="{{ asset('images/logo-dinas.svg') }}" alt="Logo Dinas PU">
+                        <span class="ml-2 text-white text-lg font-semibold">Dinas PU</span>
+                    
                 </div>
 
                 <!-- Links -->

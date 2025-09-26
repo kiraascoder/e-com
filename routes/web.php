@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\KepalaDinasController;
 use App\Http\Controllers\KetuaBidangController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PublicController;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home.index');
-});
+})->name('home');
 
 Route::middleware('authenticated')->group(function () {
     Route::get('login', [SesiController::class, 'loginView'])->name('login');
@@ -26,7 +27,7 @@ Route::prefix('warga')->middleware('role:warga')->group(function () {
     Route::put('edit-profile/update', [WargaController::class, 'profileUpdate'])->name('warga.profile.update');
     Route::get('laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
     Route::get('laporan/{id}/detail', [WargaController::class, 'detailLaporan'])->name('warga.laporan.show');
-    Route::delete('laporan/{id}/delete', [WargaController::class, 'destroyLaporan'])->name('warga.laporan.destroy');
+
     Route::get('buat-laporan', [WargaController::class, 'buatLaporan'])->name('warga.buat.laporan');
     Route::post('store-laporan', [WargaController::class, 'storeLaporan'])->name('warga.laporan.store');
 });
@@ -65,6 +66,7 @@ Route::prefix('ketua')->middleware(['auth', 'role:ketua_bidang'])->group(functio
     Route::get('/tim/{id}', [KetuaBidangController::class, 'detailTim'])->name('ketua.tim.show');
     Route::get('/daftar-laporan', [KetuaBidangController::class, 'laporan'])->name('ketua.laporan');
     Route::get('/review-laporan', [KetuaBidangController::class, 'review'])->name('ketua.review');
+    Route::delete('laporan/{id}/delete', [KetuaBidangController::class, 'destroyLaporan'])->name('ketua.laporan.destroy');
     Route::get('/review/laporan-tugas/{laporanTugas}/', [KetuaBidangController::class, 'showReview'])->name('ketua.review.show');
     Route::patch('/review/{laporanNonRutin}/approve', [KetuaBidangController::class, 'approveNonRutin'])->name('ketua.review.approve');
 });
@@ -87,6 +89,15 @@ Route::prefix('pegawai')->middleware(['auth', 'role:pegawai'])->group(function (
         ->middleware(['auth']);
 });
 
+Route::prefix('kepala-dinas')->middleware(['auth', 'role:kepala_dinas'])->group(function () {
+    Route::get('/dashboard', [KepalaDinasController::class, 'index'])->name('dinas.dashboard');
+    Route::get('/report', [KepalaDinasController::class, 'report'])->name('dinas.report');
+    Route::get('/tim', [KepalaDinasController::class, 'tim'])->name('dinas.tim');
+    Route::get('/laporan', [KepalaDinasController::class, 'laporan'])->name('dinas.laporan');
+});
+
 Route::post('/logout', [SesiController::class, 'logout'])->name('logout');
 Route::get('/bidang', [PublicController::class, 'bidang'])->name('bidang.index');
 Route::get('/tentang', [PublicController::class, 'tentang'])->name('tentang.index');
+Route::get('buat-laporan', [WargaController::class, 'buatLaporan'])->name('warga.buat.laporan');
+Route::post('store-laporan', [WargaController::class, 'storeLaporan'])->name('warga.laporan.store');
