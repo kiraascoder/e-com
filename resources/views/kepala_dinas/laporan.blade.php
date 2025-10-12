@@ -96,21 +96,11 @@
                             <option value="selesai" {{ request('status_verifikasi') == 'selesai' ? 'selected' : '' }}>
                                 Selesai</option>
                         </select>
-                        <select name="bidang_id"
-                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <option value="">Semua Bidang</option>
-                            @foreach ($bidangs ?? [] as $bidang)
-                                <option value="{{ $bidang->id }}"
-                                    {{ request('bidang_id') == $bidang->id ? 'selected' : '' }}>
-                                    {{ $bidang->nama }}
-                                </option>
-                            @endforeach
-                        </select>
                         <select name="sort_by"
                             class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
                             <option value="">Urutkan</option>
-                            <option value="tanggal_terbaru"
-                                {{ request('sort_by') == 'tanggal_terbaru' ? 'selected' : '' }}>Tanggal Terbaru</option>
+                            <option value="tanggal_terbaru" {{ request('sort_by') == 'tanggal_terbaru' ? 'selected' : '' }}>
+                                Tanggal Terbaru</option>
                             <option value="tanggal_terlama"
                                 {{ request('sort_by') == 'tanggal_terlama' ? 'selected' : '' }}>Tanggal Terlama</option>
                             <option value="nama_az" {{ request('sort_by') == 'nama_az' ? 'selected' : '' }}>Nama A-Z
@@ -204,17 +194,10 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('ketua.detail-laporan.single.show', ['id' => $laporan->id ?? $laporan['id']]) }}"
+                                        <a href="{{ route('dinas.detail-laporan.single.show', ['id' => $laporan->id ?? $laporan['id']]) }}"
                                             class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200">
                                             Detail
                                         </a>
-
-                                        @if ($laporan->status_verifikasi === 'diterima' && !$laporan->timNonRutin)
-                                            <button
-                                                class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 hover:bg-green-200 assign-btn" ">
-                                                    Assign
-                                                </button>
-                                        @endif
                                     </div>
                                 </td>
                             </tr>

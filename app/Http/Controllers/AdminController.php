@@ -220,4 +220,68 @@ public function storeUser(Request $request)
             ->route('admin.users')
             ->with('success', 'User berhasil dihapus.');
     }
+    public function updateUser(Request $request, User $user)
+{
+    // Validasi dasar
+    $rules = [
+        'name'          => ['required', 'string', 'max:255'],
+        'email'         => ['required', 'string', 'email', 'lowercase', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+        'nip'           => ['nullable', 'string', 'max:50', Rule::unique('users', 'nip')->ignore($user->id)],
+        'password'      => ['nullable', 'string', 'min:6'], // opsional
+        'role'          => ['required', Rule::in(['admin','ketua_bidang','pegawai','warga','kepala_dinas'])],
+        'alamat'        => ['nullable', 'string', 'max:255'],
+        'no_telepon'    => ['nullable', 'string', 'max:50'],
+        'jenis_kelamin' => ['nullable', Rule::in(['L','P','Laki-Laki','Perempuan'])],
+        'tanggal_lahir' => ['nullable', 'date'],
+        'bidang_id'     => ['nullable', 'integer', 'exists:bidangs,id'],
+    ];
+
+    // Jika role pegawai/ketua_bidang, wajib pilih bidang
+    $role = $request->input('role');
+    if (in_array($role, ['pegawai','ketua_bidang'])) {
+        $rules['bidang_id'] = ['required', 'integer', 'exists:bidangs,id'];
+    }
+
+    $messages = []; // pakai default sudah cukup, kamu sudah punya label di storeUser
+
+    $validated = $request->validate($rules, $messages);
+
+    // Normalisasi jenis kelamin ke enum migration
+    $jk = $validated['jenis_kelamin'] ?? null;
+    if ($jk) {
+        if (in_array($jk, ['L', 'Laki-laki', 'l', 'laki-laki'])) $jk = 'Laki-Laki';
+        if (in_array($jk, ['P', 'Perempuan', 'p'])) $jk = 'Perempuan';
+    }
+
+    // Lindungi diri sendiri: opsional—mis. larang turunkan role sendiri
+    if ($user->id === auth()->id() && $user->role !== $role) {
+        return back()->withErrors(['error' => 'Anda tidak dapat mengubah peran akun Anda sendiri.'])
+                     ->withInput($request->except('password') + ['form_type' => 'user_edit']);
+    }
+
+    // Siapkan payload update
+    $payload = [
+        'name'          => trim($validated['name']),
+        'email'         => strtolower(trim($validated['email'])),
+        'role'          => $validated['role'],
+        'alamat'        => $validated['alamat'] ?? null,
+        'no_telepon'    => $validated['no_telepon'] ?? null,
+        'jenis_kelamin' => $jk,
+        'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+        'bidang_id'     => $validated['bidang_id'] ?? null,
+    ];
+    // NIP opsional
+    if (array_key_exists('nip', $validated)) {
+        $payload['nip'] = $validated['nip'];
+    }
+    // Password opsional
+    if ($request->filled('password')) {
+        $payload['password'] = Hash::make($validated['password']);
+    }
+
+    $user->update($payload);
+
+    return redirect()->route('admin.users')->with('success', 'User berhasil diperbarui.');
+}
+
 }

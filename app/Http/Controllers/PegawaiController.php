@@ -83,6 +83,19 @@ class PegawaiController extends Controller
         ];
         return view('pegawai.laporan', compact('laporans', 'stats'));
     }
+
+   public function destroyLaporan($id)
+{
+    $laporan = LaporanNonRutin::find($id);
+
+    if (!$laporan) {
+        return back()->with('error', 'Laporan tidak ditemukan');
+    }
+
+    $laporan->delete();
+    return back()->with('success', 'Laporan berhasil dihapus');
+}
+
     public function detailLaporan($id)
     {
         $laporan = Laporan::find($id);
