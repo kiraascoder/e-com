@@ -44,16 +44,8 @@ return new class extends Migration {
             $table->string('kode_laporan')->unique();
             $table->string('judul');
             $table->text('deskripsi');
-            $table->enum('kategori_fasilitas', [
-                'jalan',
-                'trotoar',
-                'lampu_jalan',
-                'taman_kota',
-                'saluran_air',
-                'lainnya'
-            ])->index();
+            $table->string('kategori_fasilitas');
             $table->string('jenis_kerusakan')->nullable();
-            $table->enum('tingkat_kerusakan', ['ringan', 'sedang', 'berat'])->default('ringan')->index();
             $table->string('alamat');
             $table->string('kecamatan')->nullable();
             $table->string('kelurahan')->nullable();
@@ -73,7 +65,7 @@ return new class extends Migration {
             $table->foreign('bidang_id')->references('id')->on('bidangs')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
-            $table->index(['kategori_fasilitas', 'tingkat_kerusakan']);
+
             $table->index(['status_verifikasi', 'status_penanganan']);
             $table->index(['latitude', 'longitude']);
         });
