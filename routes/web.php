@@ -25,8 +25,6 @@ Route::prefix('warga')
     ->middleware('role:warga')
     ->group(function () {
         Route::get('dashboard', [WargaController::class, 'index'])->name('warga.dashboard');
-        Route::get('edit-profile', [WargaController::class, 'profile'])->name('warga.profile');
-        Route::put('edit-profile/update', [WargaController::class, 'profileUpdate'])->name('warga.profile.update');
         Route::get('laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
         Route::get('laporan/{id}/detail', [WargaController::class, 'detailLaporan'])->name('warga.laporan.show');
 
