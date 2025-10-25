@@ -23,8 +23,7 @@ Route::middleware('authenticated')->group(function () {
 
 Route::prefix('warga')
     ->middleware('role:warga')
-    ->group(function () {
-        Route::get('dashboard', [WargaController::class, 'index'])->name('warga.dashboard');
+    ->group(function () {        
         Route::get('laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
         Route::get('laporan/{id}/detail', [WargaController::class, 'detailLaporan'])->name('warga.laporan.show');
 
