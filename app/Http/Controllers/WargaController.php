@@ -87,7 +87,6 @@ class WargaController extends Controller
             'deskripsi'          => ['required', 'string'],
             'kategori_fasilitas' => ['required', Rule::in(['jalan', 'trotoar', 'lampu_jalan', 'taman_kota', 'saluran_air', 'lainnya'])],
             'jenis_kerusakan'    => ['nullable', 'string', 'max:100'],
-            'tingkat_kerusakan'  => ['required', Rule::in(['ringan', 'sedang', 'berat'])],
 
             'alamat'    => ['required', 'string', 'max:255'],
             'kecamatan' => ['nullable', 'string', 'max:100'],
@@ -125,17 +124,13 @@ class WargaController extends Controller
                 'kode_laporan'      => $this->generateKodeLaporan(),
                 'judul'             => $validated['judul'],
                 'deskripsi'         => $validated['deskripsi'],
-
                 'kategori_fasilitas' => $validated['kategori_fasilitas'],
                 'jenis_kerusakan'   => $validated['jenis_kerusakan'] ?? null,
-                'tingkat_kerusakan' => $validated['tingkat_kerusakan'],
-
                 'alamat'    => $validated['alamat'],
                 'kecamatan' => $validated['kecamatan'] ?? null,
                 'kelurahan' => $validated['kelurahan'] ?? null,
                 'latitude'  => $validated['latitude'] ?? null,
                 'longitude' => $validated['longitude'] ?? null,
-
                 'foto'       => $fotoPath,
                 'pelapor_id' => $pelaporId,
                 'is_anonim'  => $isAnonim,
@@ -154,7 +149,7 @@ class WargaController extends Controller
             return $laporan;
         });
         return redirect()
-            ->route('warga.dashboard', $laporan->id)
+            ->route('home', $laporan->id)
             ->with('success', 'Laporan berhasil dikirim. Terima kasih atas partisipasi Anda!');
     }
     private function generateKodeLaporan(): string
@@ -199,10 +194,5 @@ class WargaController extends Controller
         return redirect()->route('warga.profile')->with('success', 'Profil berhasil diperbarui!');
     }
 
-    public function destroyLaporan($id)
-    {
-        $laporan = Laporan::findOrFail($id);
-        $laporan->delete();
-        return redirect()->route('warga.dashboard')->with('success', 'Laporan berhasil dihapus');
-    }
+
 }

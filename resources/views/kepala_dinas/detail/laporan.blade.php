@@ -305,7 +305,7 @@
                             Kembali
                         </a>
 
-                        <form action="{{ route('ketua.laporan.destroy', $laporan->id) }}" method="POST"
+                        <form action="{{ route('kepala.laporan.destroy', $laporan->id) }}" method="POST"
                             onsubmit="return confirm('Yakin ingin menghapus laporan ini?');">
                             @csrf
                             @method('DELETE')

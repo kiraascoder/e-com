@@ -11,7 +11,7 @@
                     <h1 class="text-2xl font-bold">Buat Laporan Baru</h1>
                     <p class="mt-1 text-blue-100">Laporkan masalah infrastruktur di sekitar Anda</p>
                 </div>
-                <a href="{{ route('warga.dashboard') }}"
+                <a href="{{ route('home') }}"
                     class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
                     ← Kembali
                 </a>
@@ -77,19 +77,15 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="tingkat_kerusakan" class="block text-sm font-medium text-gray-700 mb-2">
-                            Tingkat Kerusakan
+                    {{-- Input tambahan jika pilih "lainnya" --}}
+                    <div id="input_lainnya_wrapper" class="hidden">
+                        <label for="kategori_lainnya" class="block text-sm font-medium text-gray-700 mb-2">
+                            Kategori Lainnya
                         </label>
-                        <select id="tingkat_kerusakan" name="tingkat_kerusakan" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500">
-                            @foreach (['ringan', 'sedang', 'berat'] as $t)
-                                <option value="{{ $t }}" @selected(old('tingkat_kerusakan') === $t)>
-                                    {{ ucfirst($t) }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('tingkat_kerusakan')
+                        <input type="text" id="kategori_lainnya" name="kategori_lainnya"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500"
+                            value="{{ old('kategori_lainnya') }}">
+                        @error('kategori_lainnya')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -121,26 +117,38 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
-                        <label for="kecamatan" class="block text-sm font-medium text-gray-700 mb-2">Kecamatan
-                            (opsional)</label>
-                        <input type="text" id="kecamatan" name="kecamatan" value="{{ old('kecamatan') }}"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500"
-                            placeholder="Misal: Bacukiki">
+                        <label for="kecamatan" class="block text-sm font-medium text-gray-700 mb-2">
+                            Kecamatan (opsional)
+                        </label>
+                        <select id="kecamatan" name="kecamatan"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500">
+                            <option value="">Pilih Kecamatan</option>
+                            @foreach (['Bacukiki', 'Bacukiki Barat', 'Soreang', 'Ujung'] as $kcm)
+                                <option value="{{ $kcm }}" @selected(old('kecamatan') === $kcm)>{{ $kcm }}
+                                </option>
+                            @endforeach
+                        </select>
                         @error('kecamatan')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
+
                     <div>
-                        <label for="kelurahan" class="block text-sm font-medium text-gray-700 mb-2">Kelurahan
-                            (opsional)</label>
-                        <input type="text" id="kelurahan" name="kelurahan" value="{{ old('kelurahan') }}"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500"
-                            placeholder="Misal: Sumpang Minangae">
+                        <label for="kelurahan" class="block text-sm font-medium text-gray-700 mb-2">
+                            Kelurahan (opsional)
+                        </label>
+                        <select id="kelurahan" name="kelurahan"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500" disabled>
+                            <option value="">Pilih Kelurahan</option>
+                        </select>
                         @error('kelurahan')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
+                        {{-- Opsional: simpan kodepos otomatis jika ingin dipakai di backend --}}
+                        <input type="hidden" id="kodepos" name="kodepos" value="">
                     </div>
                 </div>
+
 
                 <!-- Koordinat -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -198,7 +206,7 @@
                     @enderror
 
                     <div id="foto-preview" class="mt-3"></div>
-                </div>        
+                </div>
                 <!-- Data Pelapor & Anonim -->
                 <div class="mb-6">
                     <label class="inline-flex items-center space-x-2">
@@ -323,6 +331,174 @@
                 timeout: 10000,
                 maximumAge: 0
             });
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+            const select = document.getElementById("kategori_fasilitas");
+            const inputWrapper = document.getElementById("input_lainnya_wrapper");
+
+            function toggleInput() {
+                if (select.value === "lainnya") {
+                    inputWrapper.classList.remove("hidden");
+                } else {
+                    inputWrapper.classList.add("hidden");
+                }
+            }
+
+            // Jalankan saat halaman pertama kali dimuat
+            toggleInput();
+
+            // Jalankan ketika user mengubah pilihan
+            select.addEventListener("change", toggleInput);
+        });
+        const WILAYAH = {
+            "Bacukiki": [{
+                    nama: "Lemoe",
+                    kodepos: "91121"
+                },
+                {
+                    nama: "Wattang Bacukiki",
+                    kodepos: "91121"
+                },
+                {
+                    nama: "Lompoe",
+                    kodepos: "91125"
+                },
+            ],
+            "Bacukiki Barat": [{
+                    nama: "Bumi Harapan",
+                    kodepos: "91121"
+                },
+                {
+                    nama: "Kampung Baru",
+                    kodepos: "91121"
+                },
+                {
+                    nama: "Sumpang Minangae",
+                    kodepos: "91121"
+                },
+                {
+                    nama: "Cappagalung",
+                    kodepos: "91122"
+                },
+                {
+                    nama: "Lumpue",
+                    kodepos: "91123"
+                },
+                {
+                    nama: "Tiro Sompe",
+                    kodepos: "91125"
+                },
+                {
+                    nama: "Galung Maloang",
+                    kodepos: "91126"
+                },
+            ],
+            "Soreang": [{
+                    nama: "Bukit Harapan",
+                    kodepos: "91131"
+                },
+                {
+                    nama: "Bukit Indah",
+                    kodepos: "91131"
+                },
+                {
+                    nama: "Kampung Pisang",
+                    kodepos: "91131"
+                },
+                {
+                    nama: "Ujung Baru",
+                    kodepos: "91131"
+                },
+                {
+                    nama: "Ujung Lare",
+                    kodepos: "91131"
+                },
+                {
+                    nama: "Wattang Soreang",
+                    kodepos: "91132"
+                },
+                {
+                    nama: "Lakessi",
+                    kodepos: "91133"
+                },
+            ],
+            "Ujung": [{
+                    nama: "Labukkang",
+                    kodepos: "91111"
+                },
+                {
+                    nama: "Mallusetasi",
+                    kodepos: "91111"
+                },
+                {
+                    nama: "Lapadde",
+                    kodepos: "91112"
+                },
+                {
+                    nama: "Ujung Bulu",
+                    kodepos: "91113"
+                },
+                {
+                    nama: "Ujung Sabbang",
+                    kodepos: "91114"
+                },
+            ],
+        };
+
+        // ====== Elemen ======
+        const kecSelect = document.getElementById('kecamatan');
+        const kelSelect = document.getElementById('kelurahan');
+        const kodeposInput = document.getElementById('kodepos');
+
+        // ====== Helper: isi opsi kelurahan berdasarkan kecamatan ======
+        function populateKelurahan(kecamatan, oldKelurahan = '') {
+            kelSelect.innerHTML = '<option value="">Pilih Kelurahan</option>';
+
+            if (!kecamatan || !WILAYAH[kecamatan]) {
+                kelSelect.disabled = true;
+                kodeposInput.value = '';
+                return;
+            }
+
+            WILAYAH[kecamatan].forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.nama;
+                opt.textContent = item.nama;
+                opt.dataset.kodepos = item.kodepos;
+                if (oldKelurahan && oldKelurahan === item.nama) {
+                    opt.selected = true;
+                    kodeposInput.value = item.kodepos;
+                }
+                kelSelect.appendChild(opt);
+            });
+
+            // Aktifkan select
+            kelSelect.disabled = false;
+
+            // Jika belum ada pilihan (tidak ada old kelurahan), kosongkan kodepos
+            if (!oldKelurahan) {
+                kodeposInput.value = '';
+            }
+        }
+
+        // ====== Event: saat kecamatan berubah ======
+        kecSelect.addEventListener('change', function() {
+            populateKelurahan(this.value);
+        });
+
+        // ====== Event: saat kelurahan berubah, set kodepos tersembunyi (opsional) ======
+        kelSelect.addEventListener('change', function() {
+            const kodepos = this.selectedOptions[0]?.dataset?.kodepos || '';
+            kodeposInput.value = kodepos;
+        });
+
+        // ====== Inisialisasi saat halaman dimuat (repopulate dari old()) ======
+        document.addEventListener('DOMContentLoaded', function() {
+            const oldKecamatan = @json(old('kecamatan'));
+            const oldKelurahan = @json(old('kelurahan'));
+            if (oldKecamatan) {
+                populateKelurahan(oldKecamatan, oldKelurahan || '');
+            }
         });
     </script>
 @endpush

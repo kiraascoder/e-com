@@ -24,7 +24,6 @@ class Laporan extends Model
         'deskripsi',
         'kategori_fasilitas',
         'jenis_kerusakan',
-        'tingkat_kerusakan',
         'alamat',
         'kecamatan',
         'kelurahan',
