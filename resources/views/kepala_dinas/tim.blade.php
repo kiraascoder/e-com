@@ -85,16 +85,6 @@
                                             class="text-blue-600 hover:text-blue-800 transition duration-200">
                                             Detail
                                         </a>
-                                        <form action="{{ route('ketua.rutin.destroy', $tim->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin ingin menghapus tim {{ $tim->nama_tim }}?')"
-                                            class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-800 transition duration-200">
-                                                Hapus
-                                            </button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -130,20 +120,10 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('ketua.nonrutin.show', $tim->id) }}"
+                                        <a href="{{ route('dinas.nonrutin.show', $tim->id) }}"
                                             class="text-blue-600 hover:text-blue-800 transition duration-200">
                                             Detail
                                         </a>
-                                        <form action="{{ route('ketua.nonrutin.destroy', $tim->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin ingin menghapus tim {{ $tim->nama_tim }}?')"
-                                            class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-800 transition duration-200">
-                                                Hapus
-                                            </button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>

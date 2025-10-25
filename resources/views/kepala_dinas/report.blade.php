@@ -190,19 +190,21 @@
                         </div>
 
                         <div class="ml-6 flex flex-col items-end space-y-2">
-                            <a href="{{ route('ketua.review.show', $lt) }}"
+                            <a href="{{ route('dinas.review.show', $lt) }}"
                                 class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                                 Lihat Detail →
                             </a>
-                        @if (($lt->status_review ?? 'pending') === 'approved')
-                            <span class="px-3 py-1 text-xs font-semibold rounded bg-green-100 text-green-800 border border-green-200">
-                                Disetujui
-                            </span>
-                        @else
-                            <span class="px-3 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-800 border border-yellow-200">
-                                Belum Disetujui
-                            </span>
-                        @endif
+                            @if (($lt->status_review ?? 'pending') === 'approved')
+                                <span
+                                    class="px-3 py-1 text-xs font-semibold rounded bg-green-100 text-green-800 border border-green-200">
+                                    Disetujui
+                                </span>
+                            @else
+                                <span
+                                    class="px-3 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                    Belum Disetujui
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </div>
