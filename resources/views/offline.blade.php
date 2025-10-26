@@ -111,6 +111,9 @@
                                 <p id="cache-usage" class="mt-1 font-medium text-gray-900">Memuat…</p>
                             </div>
                         </div>
+                        
+                        <x-pwa-install-button label="Download / Install PWA" />
+
 
                         <!-- Catatan -->
                         <div class="mt-6 bg-blue-50 border border-blue-200 text-blue-900 rounded-xl p-4">
@@ -136,6 +139,7 @@
                     <span>© {{ now()->year }} Dinas Pekerjaan Umum — Kota Parepare</span>
                     <span id="reconnect-status" class="hidden text-emerald-700">Koneksi kembali! Memuat ulang…</span>
                 </div>
+
             </div>
         </div>
     </main>
@@ -188,7 +192,8 @@
                         setTimeout(() => window.location.reload(), 800);
                     }
                 } catch (_) {
-                    /* tetap diam */ }
+                    /* tetap diam */
+                }
             };
             setInterval(tryPing, 3000);
         })();
