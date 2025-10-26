@@ -2,7 +2,8 @@
   "functions": {
     "api/index.php": { "runtime": "vercel-php@0.7.4" }
   },
-  "buildCommand": "composer install --no-dev --prefer-dist --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache && npm ci && npm run build",
+  "installCommand": "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\" && php composer-setup.php && php composer.phar install --no-dev --prefer-dist --optimize-autoloader --no-interaction && npm ci",
+  "buildCommand": "php artisan config:cache && php artisan route:cache && php artisan view:cache && npm run build",
   "outputDirectory": "public",
   "routes": [
     { "src": "/build/(.*)", "dest": "/public/build/$1", "headers": { "cache-control": "public, max-age=31536000, immutable" } },
