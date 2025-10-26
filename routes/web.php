@@ -23,7 +23,7 @@ Route::middleware('authenticated')->group(function () {
 
 Route::prefix('warga')
     ->middleware('role:warga')
-    ->group(function () {        
+    ->group(function () {
         Route::get('laporan', [WargaController::class, 'laporan'])->name('warga.laporan');
         Route::get('laporan/{id}/detail', [WargaController::class, 'detailLaporan'])->name('warga.laporan.show');
 
@@ -130,3 +130,7 @@ Route::get('/500', function () {
 Route::get('/401', function () {
     return view('errors.401');
 })->name('unauthenticated');
+
+Route::get('/offline', function () {
+    return view('offline');  // buat view resources/views/offline.blade.php
+});
