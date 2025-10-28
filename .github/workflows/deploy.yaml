@@ -10,14 +10,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout source code dari repo
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup PHP environment
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2      
+          php-version: '8.2'
+          extensions: mbstring, bcmath, intl, gd, xml, ctype, json, tokenizer, fileinfo, pdo, mysql
+          tools: composer, php-cs-fixer
 
+      # 3️⃣ Install dependencies Laravel
+      - name: Install Composer Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      # 4️⃣ Setup Node.js dan install dependencies frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # 5️⃣ Install dan build assets (Tailwind, Vite, dll)
+      - name: Install NPM Packages
+        run: npm install
+
+      - name: Build Frontend Assets
+        run: npm run build
+
+      # 6️⃣ Hapus file yang tidak perlu agar deployment lebih cepat
+      - name: Clean up unnecessary files
+        run: |
+          rm -rf node_modules
+          rm -rf tests
+          rm -rf .github
+
+      # 7️⃣ Upload hasil build via FTP ke Hostinger
       - name: Upload Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -25,4 +54,11 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /domains/laporpupare.site/e-com/
-          local-dir: ./ 
+          local-dir: ./
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
+            **/tests/**
+            **/storage/logs/**
+            **/storage/framework/cache/**
