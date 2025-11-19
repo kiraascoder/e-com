@@ -22,7 +22,10 @@
             <!-- Logo -->
             <div class="flex justify-center">
                 <div class="bg-white p-4 rounded-full shadow-lg">
-                    <img class="h-12 w-12" src="{{ asset('images/logo-dinas.svg') }}" alt="Logo Dinas PU">
+                    <a href="{{ route('home') }}">
+                        <img class="h-12 w-12 cursor-pointer" src="{{ asset('images/logo-dinas.svg') }}"
+                            alt="Logo Dinas PU">
+                    </a>
                 </div>
             </div>
             <h2 class="mt-6 text-center text-3xl font-bold text-white">

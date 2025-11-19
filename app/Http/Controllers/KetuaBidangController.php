@@ -56,7 +56,7 @@ class KetuaBidangController extends Controller
         return view('ketua-bidang.tim', compact('users', 'timRutin', 'timNonRutin', 'laporans'));
     }
 
-        public function destroyLaporan($id)
+    public function destroyLaporan($id)
     {
         $laporan = Laporan::findOrFail($id);
         $laporan->delete();
@@ -287,10 +287,10 @@ class KetuaBidangController extends Controller
     {
         // Otorisasi per-bidang
         $laporanTugas->loadMissing([
-            'timNonRutin:id,nama_tim,penanggung_jawab_id,bidang_id,deskripsi,created_at',
-            'timNonRutin.penanggungJawab:id,name,email',
-            'laporan:id,judul,kode_laporan,alamat,status_verifikasi,status_penanganan,tanggal_selesai,foto',
-            'penanggungJawab:id,name,email',
+            'timNonRutin',
+            'timNonRutin.penanggungJawab',
+            'laporan', // ⬅️ penting: jangan pakai :id,judul,... supaya semua kolom (termasuk kontak_pelapor) ikut
+            'penanggungJawab',
         ]);
 
         abort_unless(
@@ -338,11 +338,11 @@ class KetuaBidangController extends Controller
     }
     public function approveNonRutin(Request $request, LaporanNonRutin $laporanNonRutin)
     {
-        
+
         $this->authorizeSameBidang($laporanNonRutin);
         if ($laporanNonRutin->status_review === 'approved') {
             return back()->with('info', 'Laporan tugas ini sudah disetujui sebelumnya.');
-        }        
+        }
         if (! in_array($laporanNonRutin->status_review, ['pending', 'revision'], true)) {
             return back()->with('error', 'Status saat ini tidak dapat di-approve.');
         }
@@ -358,5 +358,4 @@ class KetuaBidangController extends Controller
         $lr->loadMissing('timNonRutin:id,bidang_id');
         abort_if(optional($lr->timNonRutin)->bidang_id !== $bidangKetua, 403, 'Tidak berhak mengakses laporan ini.');
     }
-    
 }

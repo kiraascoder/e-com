@@ -126,8 +126,7 @@ class Laporan extends Model
                 $model->kode_laporan = 'LPR-' . now()->format('Ymd') . '-' . str_pad((string)random_int(0, 9999), 4, '0', STR_PAD_LEFT);
             }
             if ($model->is_anonim) {
-                $model->nama_pelapor   = 'Anonim';
-                $model->kontak_pelapor = null;
+                $model->nama_pelapor   = 'Anonim';                
                 $model->pelapor_id     = null;
             }
         });

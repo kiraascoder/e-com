@@ -23,10 +23,23 @@
                         @php
                             $role = Auth::user()->role ?? null;
                             $targets = [
-                                'admin' => ['route' => 'admin.dashboard', 'label' => 'Dashboard Admin'],
-                                'ketua_bidang' => ['route' => 'ketua.dashboard', 'label' => 'Dashboard Ketua'],
-                                'pegawai' => ['route' => 'pegawai.dashboard', 'label' => 'Dashboard Pegawai'],
-                                'warga' => ['route' => 'warga.dashboard', 'label' => 'Dashboard Warga'],
+                                'admin' => [
+                                    'route' => 'admin.dashboard',
+                                    'label' => 'Dashboard Admin',
+                                ],
+                                'ketua_bidang' => [
+                                    'route' => 'ketua.dashboard',
+                                    'label' => 'Dashboard Ketua',
+                                ],
+                                'pegawai' => [
+                                    'route' => 'pegawai.dashboard',
+                                    'label' => 'Dashboard Pegawai',
+                                ],
+                                // 🆕 tambahkan mapping untuk kepala_dinas
+                                'kepala_dinas' => [
+                                    'route' => 'dinas.dashboard',
+                                    'label' => 'Dashboard Kepala Dinas',
+                                ],
                             ];
                         @endphp
 
@@ -42,11 +55,11 @@
                             Masuk
                         </a>
                     @endauth
-
                     <a href="{{ route('warga.buat.laporan') }}"
                         class="border-2 border-white text-white hover:bg-white hover:text-blue-800 px-8 py-3 rounded-lg font-semibold transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
                         Laporkan Masalah
                     </a>
+
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\KepalaDinasController;
 use App\Http\Controllers\KetuaBidangController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\SaranController;
 use App\Http\Controllers\SesiController;
 use App\Http\Controllers\WargaController;
 use Illuminate\Support\Facades\Route;
@@ -107,11 +108,15 @@ Route::prefix('kepala-dinas')
         Route::get('/laporan/{id}/detail-laporan', [KepalaDinasController::class, 'detailLaporan'])->name('dinas.detail-laporan.single.show');
         Route::get('/review/laporan-tugas/{laporanTugas}/', [KepalaDinasController::class, 'showReview'])->name('dinas.review.show');
         Route::delete('laporan/{id}/delete', [KepalaDinasController::class, 'destroyLaporan'])->name('kepala.laporan.destroy');
+        Route::get('/saran', [KepalaDinasController::class, 'saran'])->name('dinas.saran');
+        Route::get('/saran/{id}/detail', [KepalaDinasController::class, 'saranDetail'])->name('dinas.saran.show');
     });
 
 Route::post('/logout', [SesiController::class, 'logout'])->name('logout');
 Route::get('/bidang', [PublicController::class, 'bidang'])->name('bidang.index');
 Route::get('/tentang', [PublicController::class, 'tentang'])->name('tentang.index');
+Route::get('/saran', [SaranController::class, 'index'])->name('saran.index');
+Route::post('/saran-store', [SaranController::class, 'storeSaran'])->name('saran.store');
 Route::get('buat-laporan', [WargaController::class, 'buatLaporan'])->name('warga.buat.laporan');
 Route::post('store-laporan', [WargaController::class, 'storeLaporan'])->name('warga.laporan.store');
 
