@@ -334,6 +334,7 @@
                     const lat = {{ (float) $laporan->latitude }};
                     const lng = {{ (float) $laporan->longitude }};
                     const title = @json($laporan->judul ?? 'Lokasi Laporan');
+                    const imageUrl = @json($imgUrl ?? null);
 
                     const map = L.map('map', {
                         zoomControl: true
@@ -344,9 +345,39 @@
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
                     }).addTo(map);
 
+                    // Buat konten popup dengan atau tanpa gambar
+                    let popupContent =
+                        `<div style="min-width: 200px;">
+                        <strong style="font-size: 14px;">${title}</strong><br>
+                        <span style="font-size: 12px; color: #666;">Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}</span>`;
+
+                    if (imageUrl) {
+                        popupContent +=
+                            `<br><img src="${imageUrl}" alt="Bukti Foto" style="width: 100%; max-width: 250px; height: auto; margin-top: 8px; border-radius: 6px; display: block;">`;
+                    }
+
+                    popupContent += `</div>`;
+
                     const marker = L.marker([lat, lng]).addTo(map);
-                    marker.bindPopup(`<strong>${title}</strong><br>Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`)
-                        .openPopup();
+
+                    // Bind popup dengan gambar
+                    marker.bindPopup(popupContent, {
+                        maxWidth: 300,
+                        minWidth: 200
+                    });
+
+                    // Auto open popup saat halaman dimuat
+                    marker.openPopup();
+
+                    // Hover effect - buka popup saat mouse mendekati marker
+                    marker.on('mouseover', function() {
+                        this.openPopup();
+                    });
+
+                    // Optional: tutup popup saat mouse keluar (komentari jika tidak ingin)
+                    // marker.on('mouseout', function() {
+                    //     this.closePopup();
+                    // });
 
                     // salin koordinat
                     const btnCopy = document.getElementById('btn-copy-koordinat');

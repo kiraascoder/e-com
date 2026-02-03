@@ -84,6 +84,14 @@
             <form method="GET" action="">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     <div class="flex flex-wrap gap-3">
+                        <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+
+                        <span class="text-sm text-gray-500 self-center">s/d</span>
+
+                        <input type="date" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}"
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+
                         <select name="status_verifikasi"
                             class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
                             <option value="">Semua Status</option>
@@ -99,7 +107,8 @@
                         <select name="sort_by"
                             class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
                             <option value="">Urutkan</option>
-                            <option value="tanggal_terbaru" {{ request('sort_by') == 'tanggal_terbaru' ? 'selected' : '' }}>
+                            <option value="tanggal_terbaru"
+                                {{ request('sort_by') == 'tanggal_terbaru' ? 'selected' : '' }}>
                                 Tanggal Terbaru</option>
                             <option value="tanggal_terlama"
                                 {{ request('sort_by') == 'tanggal_terlama' ? 'selected' : '' }}>Tanggal Terlama</option>

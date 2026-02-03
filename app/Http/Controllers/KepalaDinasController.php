@@ -25,24 +25,67 @@ class KepalaDinasController extends Controller
         return view('kepala_dinas.index', compact('laporanBidang', 'timRutin', 'timNonRutin', 'laporanSelesai'));
     }
 
-    public function laporan()
+    public function laporan(Request $request)
     {
-        $laporans = Laporan::orderBy('created_at', 'desc')->paginate(10);
+        // =====================
+        // Query utama laporan
+        // =====================
+        $query = Laporan::query();
 
-        $counts = Laporan::select('status_verifikasi', DB::raw('COUNT(*) AS total'))
+        // Filter status
+        if ($request->filled('status_verifikasi')) {
+            $query->where('status_verifikasi', $request->status_verifikasi);
+        }
+
+        // Search judul
+        if ($request->filled('search')) {
+            $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        // ✅ Filter tanggal (range)
+        if ($request->filled('tanggal_mulai')) {
+            $query->whereDate('tanggal_laporan', '>=', $request->tanggal_mulai);
+        }
+
+        if ($request->filled('tanggal_selesai')) {
+            $query->whereDate('tanggal_laporan', '<=', $request->tanggal_selesai);
+        }
+
+        // Sorting
+        if ($request->sort_by === 'tanggal_terbaru') {
+            $query->orderBy('tanggal_laporan', 'desc');
+        } elseif ($request->sort_by === 'tanggal_terlama') {
+            $query->orderBy('tanggal_laporan', 'asc');
+        } elseif ($request->sort_by === 'nama_az') {
+            $query->orderBy('judul', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // Pagination + jaga query string
+        $laporans = $query->paginate(10)->withQueryString();
+
+        // =====================
+        // Statistik (GLOBAL)
+        // =====================
+        $stats = Laporan::select(
+            'status_verifikasi',
+            DB::raw('COUNT(*) as total')
+        )
             ->groupBy('status_verifikasi')
-            ->pluck('total', 'status_verifikasi');
+            ->pluck('total', 'status_verifikasi')
+            ->toArray();
 
+        // Default value jika kosong
         $stats = [
-            'pending' => $laporans->where('status_verifikasi', 'pending')->count(),
-            'diterima' => $laporans->where('status_verifikasi', 'diterima')->count(),
-            'selesai' => $laporans->where('status_verifikasi', 'selesai')->count(),
-            'ditolak' => $laporans->where('status_verifikasi', 'ditolak')->count(),
+            'pending'  => $stats['pending']  ?? 0,
+            'diterima' => $stats['diterima'] ?? 0,
+            'selesai'  => $stats['selesai']  ?? 0,
+            'ditolak'  => $stats['ditolak']  ?? 0,
         ];
 
         return view('kepala_dinas.laporan', compact('laporans', 'stats'));
     }
-
     public function report(Request $request)
     {
         // Ambil SEMUA data non-rutin (tanpa menyesuaikan bidang)
@@ -180,7 +223,7 @@ class KepalaDinasController extends Controller
             'timNonRutin.penanggungJawab',
             'laporan',
             'penanggungJawab',
-        ]);        
+        ]);
 
         if (Auth::user()->role === 'ketua_bidang') {
             abort_unless(optional($laporanTugas->timNonRutin)->bidang_id === Auth::user()->bidang_id, 403);
